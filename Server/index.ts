@@ -1,11 +1,21 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+import * as http from "http";
+const dotenv = require('dotenv');
+
+dotenv.config();
+const port = process.env.PORT;
+
+import {authRouter} from "./Routes/auth";
+
+
+const app = express();
+
+
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+    res.send('Hello World!')
+  })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+
+let server = http.createServer(app);
+server.listen(port, ()=>console.log("HTTP server starting"));
