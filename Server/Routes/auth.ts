@@ -1,12 +1,12 @@
 import express from "express";
 
 export const authRouter = express.Router();
+authRouter.use(express.json());
 
-
-authRouter.get("/:m1", async (req: any, res: any) => {
-    const deviceId = req?.body?.deviceId;
-    const sessionId = req?.body?.sessionId;
-    if (checkDeviceId(deviceId)){
+authRouter.post("/m1", async (req: any, res: any) => {
+    const { device_id, session_id } = req.body;
+    console.log(device_id);
+    if (checkDeviceId(device_id)){
         const M2 = generateM2(); // if valid Device ID --> generate message M2
         return res.status(200).json(M2);
     }
@@ -18,12 +18,13 @@ authRouter.get("/:m1", async (req: any, res: any) => {
 //Check if DeviceId of the request is known to server
 function checkDeviceId(deviceId: String): boolean {
     const data = require("../devices.json");
-    for (const device of data.devices) {
-        if (deviceId === device.device_id) {
-            return true;
-        }
-    }
-    return false;
+    let found: boolean = false;
+    data.devices.forEach((device: any)=>{
+      if (deviceId == device.device_id.toString()) {
+        found = true;
+      } 
+    });
+    return found;
 }
 
 function generateM2(){
@@ -54,5 +55,3 @@ function generateC1(): number[] {
   function generateR1(): number{
     return Math.floor(Math.random() * 1000);
   }
-
-  

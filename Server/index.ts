@@ -9,12 +9,16 @@ import {authRouter} from "./Routes/auth";
 
 
 const app = express();
-
-
+app.use(express.json());
+app.use("/auth",authRouter);
 
 app.get('/', (req: any, res: any) => {
     res.send('Hello World!')
   })
+
+  
+
+    
 
 
 let server = http.createServer(app);

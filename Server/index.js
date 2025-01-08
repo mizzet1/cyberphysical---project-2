@@ -38,7 +38,10 @@ const http = __importStar(require("http"));
 const dotenv = require('dotenv');
 dotenv.config();
 const port = process.env.PORT;
+const auth_1 = require("./Routes/auth");
 const app = express();
+app.use(express.json());
+app.use("/auth", auth_1.authRouter);
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
