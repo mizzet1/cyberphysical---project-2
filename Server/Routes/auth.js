@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,28 +7,33 @@ exports.authRouter = void 0;
 const express_1 = __importDefault(require("express"));
 exports.authRouter = express_1.default.Router();
 exports.authRouter.use(express_1.default.json());
-exports.authRouter.post("/m1", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { device_id, session_id } = req.body;
+exports.authRouter.post("/m1", (req, res) => {
+    const { device_id, session_id } = req.params;
     console.log(device_id);
-    if (checkDeviceId(device_id)) {
+    if (checkDeviceId(device_id, session_id)) {
+        console.log("Device Id is valid");
         const M2 = generateM2(); // if valid Device ID --> generate message M2
         return res.status(200).json(M2);
     }
     else {
+        console.log("Invalid Device Id");
         return res.status(401).send("Invalid Device Id"); // else, return 401 Unauthorized status code
     }
-}));
+});
 //Check if DeviceId of the request is known to server
-function checkDeviceId(deviceId) {
+function checkDeviceId(device_id, session_id) {
     const data = require("../devices.json");
     let found = false;
     data.devices.forEach((device) => {
-        if (deviceId == device.device_id.toString()) {
+        if (device_id == device.device_id.toString()) {
             found = true;
+            //save session_id of the device
+            device.session_id = session_id;
         }
     });
     return found;
 }
+//ge
 function generateM2() {
     const r1 = generateR1();
     const C1 = generateC1();
@@ -47,6 +43,7 @@ function generateM2() {
     };
     return M2;
 }
+// geenrateC1
 function generateC1() {
     const c1 = [];
     // Generates p, a random number from 2 and 7 (i.e. at least 2 keys, at most 7 (n-1) keys). 
@@ -60,6 +57,7 @@ function generateC1() {
     }
     return c1;
 }
+// generateR1
 function generateR1() {
     return Math.floor(Math.random() * 1000);
 }

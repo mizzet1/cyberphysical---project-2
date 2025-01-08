@@ -11,54 +11,63 @@ import { environment } from '../environments/environment';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Device';
 
+  private headers: HttpHeaders = new HttpHeaders({
+    'Content-Type':  'application/json'
+  });
 
-  // private headers: HttpHeaders = new HttpHeaders({
-  //   'Content-Type':  'application/json'
-  // });
-
-  // private m1Params: HttpParams = new HttpParams();
+  private m1Params: HttpParams = new HttpParams();
   
-  // //constructor
-  // constructor(private http: HttpClient){}
-  // generateM1(): Observable<any>{
-    
-  //   const deviceId = environment.device_id;
-  //   const sessionId = this.generateSessionId();
+  constructor(private http: HttpClient) {}
 
-  //   this.m1Params.set('deviceId', deviceId).set('sessionId', sessionId );
+  //generateM1
+  generateM1(): Observable<any>{
+    const deviceId = environment.device_id;
+    const sessionId = this.generateSessionId();
+    this.m1Params.set('deviceId', deviceId).set('sessionId', sessionId );
+    return this.http.post('http://localhost:3000/m1',null, {headers: this.headers, params: this.m1Params})
+  }
 
+  //onAuthenticate
+  onAuthenticate() {
+    alert('Authentication started!');
+    console.log("Authentication started!");
 
-  //   return this.http.get('http://localhost:3000/m1',{headers: this.headers, params: this.m1Params})
+    //generateM1()
+    // this.generateM1().subscribe({
+    //   next: (res) => {
+    //     const m2 = res.body;
+    //     console.log("Server response: ", m2);
+    //   },
+    //   error: (err) => {
+    //     if(err){
+    //       alert("Error: " + err.message);
+    //       console.log("error: ", err);
+    //     }
+    //   }
+    // });
+  }
 
-  // }
+  //generateSessionId
+  generateSessionId(){
+    const sessionId = Math.floor(Math.random() * 1000).toString();
+    localStorage.setItem('sessionId', sessionId);
+    return sessionId;
+  }
 
-  // //onAuthenticate (from client click)
-  // onAuthenticate() {
-  //   alert('Authentication started!');
-  //   //generateM1 ...
-  // }
-
-  
-  // generateSessionId(){
-  //   const sessionId = Math.floor(Math.random() * 1000).toString();
-  //   localStorage.setItem('sessionId', sessionId);
-  //   return sessionId;
-  // }
-
-  // authM2(){
-  //   this.generateM1().subscribe({
-  //     next: (res) => {
-  //      const m2 = res.body;
-  //     },
-  //     error: (err) => {
-  //       if(err.status==403){
+  //authM2
+  authM2(){
+    this.generateM1().subscribe({
+      next: (res) => {
+       const m2 = res.body;
+      },
+      error: (err) => {
+        if(err.status==403){
          
-  //       }
+        }
       
-  //     }
-  //   });
-  // }
+      }
+    });
+  }
 
 }
