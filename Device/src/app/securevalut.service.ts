@@ -15,7 +15,7 @@ export class SecureVaultService {
     return this.http.get<{ [key: string]: string }>('./assets/secure_vault.json');
   }
 
-  // Store the secure vault locally in the service
+  // Store a new secure vault locally in the service
   setVault(vault: { [key: string]: string }) {
     this.secureVault = vault;
   }
