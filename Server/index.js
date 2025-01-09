@@ -36,14 +36,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const http = __importStar(require("http"));
 const dotenv = require('dotenv');
+const m1Router_1 = require("./Routes/m1Router");
+const cors = require('cors'); // CommonJS style import
 dotenv.config();
 const port = process.env.PORT;
-const auth_1 = require("./Routes/auth");
 const app = express();
+// Parse request body as JSON
 app.use(express.json());
-app.use("/auth", auth_1.authRouter);
+// Enable CORS only for the Angular client
+const corsOptions = {
+    origin: 'http://localhost:4200', // Allow only the Angular client to access
+    methods: ['GET', 'POST'], // Allow only specific HTTP methods
+    allowedHeaders: ['Content-Type'], // Allow specific headers
+};
+app.use(cors(corsOptions));
+// Define the routes
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Server is running ...');
 });
+app.use("/auth", m1Router_1.m1Router);
+// Start the server
 let server = http.createServer(app);
-server.listen(port, () => console.log("HTTP server starting"));
+server.listen(port, () => console.log(`Server is running on http://localhost:${port}`));

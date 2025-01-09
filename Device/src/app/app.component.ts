@@ -16,7 +16,6 @@ export class AppComponent {
     'Content-Type':  'application/json'
   });
 
-  private m1Params: HttpParams = new HttpParams();
   
   constructor(private http: HttpClient) {}
 
@@ -24,8 +23,10 @@ export class AppComponent {
   generateM1(): Observable<any>{
     const deviceId = environment.device_id;
     const sessionId = this.generateSessionId();
-    this.m1Params.set('deviceId', deviceId).set('sessionId', sessionId );
-    return this.http.post('http://localhost:3000/m1',null, {headers: this.headers, params: this.m1Params})
+    // Body data to be sent in the POST request
+    const body = { deviceId, sessionId };
+    // Send POST request to the server
+    return this.http.post('http://localhost:3000/auth/m1', body, {headers: this.headers});
   }
 
   //onAuthenticate
@@ -33,19 +34,17 @@ export class AppComponent {
     alert('Authentication started!');
     console.log("Authentication started!");
 
-    //generateM1()
-    // this.generateM1().subscribe({
-    //   next: (res) => {
-    //     const m2 = res.body;
-    //     console.log("Server response: ", m2);
-    //   },
-    //   error: (err) => {
-    //     if(err){
-    //       alert("Error: " + err.message);
-    //       console.log("error: ", err);
-    //     }
-    //   }
-    // });
+    this.generateM1().subscribe({
+      next: (res) => {
+        console.log("Server response: ", res);
+      },
+      error: (err) => {
+        if(err){
+          alert("Error: " + err.message);
+          console.log("error: ", err);
+        }
+      }
+    });
   }
 
   //generateSessionId
@@ -53,21 +52,6 @@ export class AppComponent {
     const sessionId = Math.floor(Math.random() * 1000).toString();
     localStorage.setItem('sessionId', sessionId);
     return sessionId;
-  }
-
-  //authM2
-  authM2(){
-    this.generateM1().subscribe({
-      next: (res) => {
-       const m2 = res.body;
-      },
-      error: (err) => {
-        if(err.status==403){
-         
-        }
-      
-      }
-    });
   }
 
 }
