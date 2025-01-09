@@ -34,14 +34,23 @@ generateSessionId(){
   return sessionId;
 }
  
+//generateKey k
+generateKey(indices: number[]): string {
+  const vault = this.secureVaultService.getVault();
+  // XOR all keys at the given indices
+  return indices
+    .map((index) => vault[index.toString()]) // Fetch keys as hex strings
+    .reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
+}
 
-  generateKey(indices: number[]): string {
-    const vault = this.secureVaultService.getVault();
-    // XOR all keys at the given indices
-    return indices
-      .map((index) => vault[index.toString()]) // Fetch keys as hex strings
-      .reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
-  }
+// generateT1
+generateT1(): string{
+  // Generate a random 64-bit (16-character) hexadecimal string
+  const hex = Array.from({ length: 16 }, () =>
+    Math.floor(Math.random() * 16).toString(16)
+  ).join('');
+  return hex;
+}
 
   
 }
