@@ -1,11 +1,10 @@
 import express from "express";
 import { copyFileSync } from "fs";
 
-export const m1Router = express.Router();
-m1Router.use(express.json());
+export const authRouter = express.Router();
+authRouter.use(express.json());
 
-m1Router.post("/", async (req: any, res: any) => {
-
+authRouter.post("/m1", async (req: any, res: any) => {
   const deviceId = req.body.deviceId;
   const sessionId = req.body.sessionId;
 
@@ -16,12 +15,6 @@ m1Router.post("/", async (req: any, res: any) => {
 
   // Check if the Device ID is known to the server
   if (checkDeviceId(deviceId, sessionId)){
-    //success message
-    // const response = {
-    //   message: 'Message M1 received successfully!',
-    // };
-    // res.status(200).json(response);
-
     // generate M2
     const M2 = generateM2(); // if valid Device ID --> generate message M2
     const M2_response = {
@@ -29,7 +22,7 @@ m1Router.post("/", async (req: any, res: any) => {
       M2: M2
     }
     res.status(200).json(M2_response);
-    }
+  }
   else{
       console.log("Invalid Device Id");
       return res.status(401).send("Invalid Device Id"); // else, return 401 Unauthorized status code
@@ -49,7 +42,7 @@ function checkDeviceId(device_id: string, session_id: string): boolean {
     });
     return found;
 }
-//ge
+//generate M2
 function generateM2(){
     const r1 = generateR1();
     const C1 = generateC1();

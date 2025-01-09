@@ -52,9 +52,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 // Define the routes
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Server is running ...');
 });
-app.use("/m1", m1Router_1.m1Router);
+app.use("/auth", m1Router_1.m1Router);
 // Start the server
 let server = http.createServer(app);
 server.listen(port, () => console.log(`Server is running on http://localhost:${port}`));

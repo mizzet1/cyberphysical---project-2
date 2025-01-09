@@ -26,7 +26,7 @@ export class AppComponent {
     // Body data to be sent in the POST request
     const body = { deviceId, sessionId };
     // Send POST request to the server
-    return this.http.post('http://localhost:3000/m1', body, {headers: this.headers});
+    return this.http.post('http://localhost:3000/auth/m1', body, {headers: this.headers});
   }
 
   //onAuthenticate
@@ -52,21 +52,6 @@ export class AppComponent {
     const sessionId = Math.floor(Math.random() * 1000).toString();
     localStorage.setItem('sessionId', sessionId);
     return sessionId;
-  }
-
-  //authM2
-  authM2(){
-    this.generateM1().subscribe({
-      next: (res) => {
-       const m2 = res.body;
-      },
-      error: (err) => {
-        if(err.status==403){
-         
-        }
-      
-      }
-    });
   }
 
 }

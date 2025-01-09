@@ -1,7 +1,7 @@
 const express = require('express');
 import * as http from "http";
 const dotenv = require('dotenv');
-import {m1Router} from "./Routes/m1Router";
+import {authRouter} from "./Routes/auth";
 const cors = require('cors');  // CommonJS style import
 
 dotenv.config();
@@ -22,10 +22,10 @@ app.use(cors(corsOptions));
 
 // Define the routes
 app.get('/', (req: any, res: any) => {
-  res.send('Hello World!')
+  res.send('Server is running ...');
 })
 
-app.use("/m1", m1Router);
+app.use("/auth", authRouter);
 
   // Start the server
 let server = http.createServer(app);
