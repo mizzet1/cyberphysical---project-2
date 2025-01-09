@@ -20,6 +20,8 @@ export class AppComponent {
   
   constructor(private http: HttpClient, private authService: AuthService) {}
 
+  const r1 = null;
+
 //onAuthenticate
 onAuthenticate() {
   alert('Authentication started!');
@@ -27,6 +29,7 @@ onAuthenticate() {
 
   this.authService.generateM1().subscribe({
     next: (res) => {
+      //call generateM3
       console.log("Server response: ", res);
     },
     error: (err) => {

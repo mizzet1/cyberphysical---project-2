@@ -1,6 +1,6 @@
 import express from "express";
 
-class authService{
+export class authService{
 
 //Check if DeviceId of the request is known to server
 static checkDeviceId(device_id: string, session_id: string): boolean {

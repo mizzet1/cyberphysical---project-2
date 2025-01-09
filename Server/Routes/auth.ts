@@ -1,10 +1,11 @@
 import express from "express";
 import { copyFileSync } from "fs";
+import {authService} from "../Services/authService";
 
 export const authRouter = express.Router();
 authRouter.use(express.json());
 
-const authService = require("../Services/authService");
+
 
 authRouter.post("/m1", async (req: any, res: any) => {
   const deviceId = req.body.deviceId;

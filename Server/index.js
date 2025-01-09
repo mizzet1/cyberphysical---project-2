@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const http = __importStar(require("http"));
 const dotenv = require('dotenv');
-const m1Router_1 = require("./Routes/m1Router");
+const auth_1 = require("./Routes/auth");
 const cors = require('cors'); // CommonJS style import
 dotenv.config();
 const port = process.env.PORT;
@@ -54,7 +54,7 @@ app.use(cors(corsOptions));
 app.get('/', (req, res) => {
     res.send('Server is running ...');
 });
-app.use("/auth", m1Router_1.m1Router);
+app.use("/auth", auth_1.authRouter);
 // Start the server
 let server = http.createServer(app);
 server.listen(port, () => console.log(`Server is running on http://localhost:${port}`));
