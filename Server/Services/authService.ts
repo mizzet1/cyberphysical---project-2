@@ -1,6 +1,9 @@
 import express from "express";
+const myCache = require('../index.ts'); // Import the shared cache
+import { SecureVaultService } from "./secureVaultService";
+import CryptoTS from 'crypto-ts';
 
-export class authService{
+export class AuthService{
 
 //Check if DeviceId of the request is known to server
 static checkDeviceId(device_id: string, session_id: string): boolean {
@@ -18,8 +21,8 @@ static checkDeviceId(device_id: string, session_id: string): boolean {
 
 //generate M2
 static generateM2(){
-    const r1 = authService.generateR1();
-    const C1 = authService.generateC1();
+    const r1 = AuthService.generateR1();
+    const C1 = AuthService.generateC1();
     const M2 = {
         r1: r1,
         C1: C1
@@ -40,16 +43,36 @@ static generateC1(): number[] {
       c1.push(indeces[current_index]);
       indeces.splice(current_index,1); 
     }
+    myCache.set('C1', c1, 0);
     return c1;
 }
 
 // generateR1
 static generateR1(): string{
     // Generate a random 64-bit (16-character) hexadecimal string
-    const hex = Array.from({ length: 16 }, () =>
+    const r1 = Array.from({ length: 16 }, () =>
       Math.floor(Math.random() * 16).toString(16)
     ).join('');
-    return hex;
-  }
+    myCache.set('r1', r1, 0);
+    return r1;
+}
+//generateKey k1
+static generateK1(indices: number[]): string {
+  const vault = SecureVaultService.getData();
+  // XOR all keys at the given indices
+  return indices
+    .map((index) => vault[index.toString()]) // Fetch keys as hex strings
+    .reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
+}
+
+static decryptM3(m3: string): any {
+  const C1 = myCache.get('C1');
+  const k1 = this.generateK1(C1);
+  return CryptoTS.AES.decrypt(m3, k1);
+}
+
+static generateM4(){
+    const m4 = "abc123";
+}
 
 }

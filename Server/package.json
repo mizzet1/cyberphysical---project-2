@@ -13,12 +13,16 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "crypto-ts": "^1.0.2",
     "dotenv": "^16.4.7",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "node-cache": "^5.1.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.5",
+    "@types/node-cache": "^4.2.5",
     "typescript": "^5.7.2"
   }
 }

@@ -1,4 +1,5 @@
 const express = require('express');
+const NodeCache = require('node-cache');
 import * as http from "http";
 const dotenv = require('dotenv');
 import {authRouter} from "./Routes/auth";
@@ -6,6 +7,9 @@ const cors = require('cors');  // CommonJS style import
 
 dotenv.config();
 const port = process.env.PORT;
+
+const myCache = new NodeCache();
+module.exports = myCache;
 
 const app = express();
 

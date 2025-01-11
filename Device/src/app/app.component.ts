@@ -32,7 +32,7 @@ onAuthenticate() {
       alert("Server response: " + res.message);
       console.log("Server response: ", res.body);
       //call sendM3
-      this.authService.sendM3(res.r1).subscribe({
+      this.authService.sendM3(res.M2.r1, res.M2.C1).subscribe({
         next: (res) => {
           alert("Server response: " + res.message);
           console.log("Server response: ", res.body);
