@@ -1,12 +1,9 @@
 import express from "express";
-import { copyFileSync } from "fs";
-import {AuthService} from "../Services/authService";
-const myCache = require('../index.ts'); // Import the shared cache
+import { cache } from "..";
+import { AuthService } from "../Services/authService";
 
 export const authRouter = express.Router();
 authRouter.use(express.json());
-
-
 
 authRouter.post("/m1", async (req: any, res: any) => {
   const deviceId = req.body.deviceId;
@@ -42,7 +39,7 @@ authRouter.post("/m3", async (req: any, res: any) => {
     //decrypt M3
     const decryptedM3 = AuthService.decryptM3(m3);
     //if (respose.r1 == myCache.get('r1')) --> genero M4
-    if(decryptedM3.r1 == myCache.get('r1')){
+    if(decryptedM3.r1 == cache['r1']){
       const M4 = AuthService.generateM4(); // if valid Device ID --> generate message M4
       const M4_response = {
         message: 'Message M3 received! Sending Message M4 ...',
@@ -52,6 +49,3 @@ authRouter.post("/m3", async (req: any, res: any) => {
     }
   }
 });
-
-
-

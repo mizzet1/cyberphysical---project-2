@@ -1,5 +1,4 @@
 const express = require('express');
-const NodeCache = require('node-cache');
 import * as http from "http";
 const dotenv = require('dotenv');
 import {authRouter} from "./Routes/auth";
@@ -8,13 +7,13 @@ const cors = require('cors');  // CommonJS style import
 dotenv.config();
 const port = process.env.PORT;
 
-const myCache = new NodeCache();
-module.exports = myCache;
-
 const app = express();
 
 // Parse request body as JSON
 app.use(express.json());
+
+// Shared cache
+export let cache: { [key: string]: any } = {};
 
 // Enable CORS only for the Angular client
 const corsOptions = {
@@ -34,4 +33,3 @@ app.use("/auth", authRouter);
   // Start the server
 let server = http.createServer(app);
 server.listen(port, ()=>console.log(`Server is running on http://localhost:${port}`));
-

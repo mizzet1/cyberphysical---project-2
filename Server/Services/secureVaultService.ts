@@ -27,5 +27,4 @@ static setData(newData: any) {
   }
 }
 
-
 }

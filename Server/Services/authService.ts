@@ -1,7 +1,6 @@
-import express from "express";
-const myCache = require('../index.ts'); // Import the shared cache
-import { SecureVaultService } from "./secureVaultService";
+const SecureVaultService = require("./secureVaultService");
 import CryptoTS from 'crypto-ts';
+import {cache} from "../index";
 
 export class AuthService{
 
@@ -21,8 +20,8 @@ static checkDeviceId(device_id: string, session_id: string): boolean {
 
 //generate M2
 static generateM2(){
-    const r1 = AuthService.generateR1();
-    const C1 = AuthService.generateC1();
+    const r1 = this.generateR1();
+    const C1 = this.generateC1();
     const M2 = {
         r1: r1,
         C1: C1
@@ -43,7 +42,8 @@ static generateC1(): number[] {
       c1.push(indeces[current_index]);
       indeces.splice(current_index,1); 
     }
-    myCache.set('C1', c1, 0);
+    cache['C1'] = c1 ;
+    console.log("cache[C1]: ", cache['C1'].C1);
     return c1;
 }
 
@@ -53,10 +53,10 @@ static generateR1(): string{
     const r1 = Array.from({ length: 16 }, () =>
       Math.floor(Math.random() * 16).toString(16)
     ).join('');
-    myCache.set('r1', r1, 0);
+    cache['r1'] = r1;
     return r1;
 }
-//generateKey k1
+// generateKey k1
 static generateK1(indices: number[]): string {
   const vault = SecureVaultService.getData();
   // XOR all keys at the given indices
@@ -66,7 +66,8 @@ static generateK1(indices: number[]): string {
 }
 
 static decryptM3(m3: string): any {
-  const C1 = myCache.get('C1');
+
+  const C1 = cache['C1'];
   const k1 = this.generateK1(C1);
   return CryptoTS.AES.decrypt(m3, k1);
 }

@@ -33,19 +33,19 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.cache = void 0;
 const express = require('express');
-const NodeCache = require('node-cache');
 const http = __importStar(require("http"));
 const dotenv = require('dotenv');
 const auth_1 = require("./Routes/auth");
 const cors = require('cors'); // CommonJS style import
 dotenv.config();
 const port = process.env.PORT;
-const myCache = new NodeCache();
-module.exports = myCache;
 const app = express();
 // Parse request body as JSON
 app.use(express.json());
+// Shared cache
+exports.cache = {};
 // Enable CORS only for the Angular client
 const corsOptions = {
     origin: 'http://localhost:4200', // Allow only the Angular client to access

@@ -1,8 +1,6 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { generate, Observable } from 'rxjs';
-import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 
 @Component({
@@ -30,20 +28,20 @@ onAuthenticate() {
   this.authService.sendM1().subscribe({
     next: (res) => {
       alert("Server response: " + res.message);
-      console.log("Server response: ", res.body);
+      console.log("Server response: ", res.M2);
       //call sendM3
-      this.authService.sendM3(res.M2.r1, res.M2.C1).subscribe({
-        next: (res) => {
-          alert("Server response: " + res.message);
-          console.log("Server response: ", res.body);
-        },
-        error: (err) => {
-          if(err){
-            alert("Error: " + err.message);
-            console.log("error: ", err);
-          }
-        }
-      });
+      // this.authService.sendM3(res.M2.r1, res.M2.C1).subscribe({
+      //   next: (res) => {
+      //     alert("Server response: " + res.message);
+      //     console.log("Server response: ", res.body);
+      //   },
+      //   error: (err) => {
+      //     if(err){
+      //       alert("Error: " + err.message);
+      //       console.log("error: ", err);
+      //     }
+      //   }
+      // });
     },
     error: (err) => {
       if(err){
