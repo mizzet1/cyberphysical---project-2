@@ -8,7 +8,8 @@ private static filePath: string = '../secure_vault.json';
 // Function to read and parse the JSON file
 static getData() {
   try {
-    const rawData = fs.readFileSync(this.filePath, 'utf8');
+    const path = require("path");
+    const rawData = fs.readFileSync(path.resolve(__dirname, this.filePath), "utf-8");
     return JSON.parse(rawData); // Parse the JSON string into an object
   } catch (err) {
     console.error('Error reading the file:', err);

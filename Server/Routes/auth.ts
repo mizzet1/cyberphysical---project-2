@@ -1,5 +1,5 @@
 import express from "express";
-import { cache } from "..";
+import { cache } from "../index";
 import { AuthService } from "../Services/authService";
 
 export const authRouter = express.Router();

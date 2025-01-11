@@ -1,5 +1,5 @@
-const SecureVaultService = require("./secureVaultService");
-import CryptoTS from 'crypto-ts';
+import { SecureVaultService } from './secureVaultService';
+import * as CryptoTS from 'crypto-ts';
 import {cache} from "../index";
 
 export class AuthService{
@@ -47,7 +47,7 @@ static generateC1(): number[] {
     return c1;
 }
 
-// generateR1
+
 static generateR1(): string{
     // Generate a random 64-bit (16-character) hexadecimal string
     const r1 = Array.from({ length: 16 }, () =>
@@ -57,9 +57,10 @@ static generateR1(): string{
     console.log("cache[r1]: ", cache['r1']);
     return r1;
 }
-// generateKey k1
+
 static generateK1(indices: number[]): string {
   const vault = SecureVaultService.getData();
+  console.log("vault: ", vault);
   // XOR all keys at the given indices
   return indices
     .map((index) => vault[index.toString()]) // Fetch keys as hex strings

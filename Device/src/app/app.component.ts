@@ -28,20 +28,21 @@ onAuthenticate() {
   this.authService.sendM1().subscribe({
     next: (res) => {
       alert("Server response: " + res.message);
-      console.log("Server response: ", res.M2);
+      console.log("Server response - M2: ", res.M2);
+      
       //call sendM3
-      // this.authService.sendM3(res.M2.r1, res.M2.C1).subscribe({
-      //   next: (res) => {
-      //     alert("Server response: " + res.message);
-      //     console.log("Server response: ", res.body);
-      //   },
-      //   error: (err) => {
-      //     if(err){
-      //       alert("Error: " + err.message);
-      //       console.log("error: ", err);
-      //     }
-      //   }
-      // });
+      this.authService.sendM3(res.M2.r1, res.M2.C1).subscribe({
+        next: (res) => {
+          alert("Server response: " + res.message);
+          console.log("Server response - M4: ", res);
+        },
+        error: (err) => {
+          if(err){
+            alert("Error: " + err.message);
+            console.log("error: ", err);
+          }
+        }
+      });
     },
     error: (err) => {
       if(err){
