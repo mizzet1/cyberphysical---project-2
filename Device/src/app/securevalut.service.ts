@@ -16,6 +16,5 @@ export class SecureVaultService {
   // Retrieve the secure vault for use
   getVault(): { [key: string]: string } {
     return this.secureVault;
-    
   }
 }

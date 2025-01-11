@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
+import { generate, Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -18,19 +18,32 @@ export class AppComponent {
   });
 
   
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
-  const r1 = null;
 
 //onAuthenticate
 onAuthenticate() {
   alert('Authentication started!');
   console.log("Authentication started!");
 
-  this.authService.generateM1().subscribe({
+  //call sendM1
+  this.authService.sendM1().subscribe({
     next: (res) => {
-      //call generateM3
-      console.log("Server response: ", res);
+      alert("Server response: " + res.message);
+      console.log("Server response: ", res.body);
+      //call sendM3
+      this.authService.sendM3(res.r1).subscribe({
+        next: (res) => {
+          alert("Server response: " + res.message);
+          console.log("Server response: ", res.body);
+        },
+        error: (err) => {
+          if(err){
+            alert("Error: " + err.message);
+            console.log("error: ", err);
+          }
+        }
+      });
     },
     error: (err) => {
       if(err){

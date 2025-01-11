@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { SecureVaultService } from './securevalut.service';
+var CryptoTS = require("crypto-ts");
 
 @Injectable({
   providedIn: 'root', // This makes the service available application-wide
@@ -17,13 +18,15 @@ export class AuthService {
 
 
 //generateM1
-generateM1(): Observable<any>{
+generateM1(): any{
   const deviceId = environment.device_id;
   const sessionId = this.generateSessionId();
   // Body data to be sent in the POST request
-  const body = { deviceId, sessionId };
-  // Send POST request to the server
-  this.secureVaultService.getVault();
+  return { deviceId, sessionId };
+}
+
+sendM1(): Observable<any>{
+  const body = this.generateM1();
   return this.http.post('http://localhost:3000/auth/m1', body, {headers: this.headers});
 }
 
@@ -69,22 +72,26 @@ generateC2(): number[] {
 }
 
 //generateR2
-generateR2(): string{
+generateR2(): string { 
   // Generate a random 64-bit (16-character) hexadecimal string
   const hex = Array.from({ length: 16 }, () =>
     Math.floor(Math.random() * 16).toString(16)
   ).join('');
   return hex;
 }
-
 //generateM3
 generateM3(r1: string): string {
   const t1 = this.generateT1();
   const c2 = this.generateC2();
   const r2 = this.generateR2();
-  const k = this.generateKey(c2);
-  const m3 = t1 + c2.join('') + r2;
-  return m3;
+  const k1 = this.generateKey(c2);
+  const m3_plain = r1+t1+{c2: c2, r2: r2}.toString();
+  return CryptoTS.AES.encrypt(m3_plain, k1);
+}
+
+sendM3(r1: string): Observable<any> {
+  const body = this.generateM3(r1);
+  return this.http.post('http://localhost:3000/auth/m3', body, {headers: this.headers});
 }
 
 }
