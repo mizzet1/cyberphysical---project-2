@@ -43,7 +43,7 @@ static generateC1(): number[] {
       indeces.splice(current_index,1); 
     }
     cache['C1'] = c1 ;
-    console.log("cache[C1]: ", cache['C1'].C1);
+    console.log("cache[C1]: ", cache['C1']);
     return c1;
 }
 
@@ -54,6 +54,7 @@ static generateR1(): string{
       Math.floor(Math.random() * 16).toString(16)
     ).join('');
     cache['r1'] = r1;
+    console.log("cache[r1]: ", cache['r1']);
     return r1;
 }
 // generateKey k1
