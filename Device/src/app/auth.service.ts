@@ -84,7 +84,7 @@ generateR2(): string {
   return hex;
 }
 //generateM3
-  generateM3(r1: string, c1: number[]): string {
+generateM3(r1: string, c1: number[]): string {
   const t1 = this.generateT1();
   const c2 = this.generateC2();
   const r2 = this.generateR2();
@@ -110,6 +110,8 @@ sendM3(r1: string, c1: number[]): Observable<any> {
   return this.http.post('http://localhost:3000/auth/m3', body, {headers: this.headers});
 }
 
+decryptM4(m4: any): any {
+}
 
 
 }

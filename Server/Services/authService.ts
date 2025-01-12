@@ -89,6 +89,8 @@ static generateM4(decryptedM3: any): any {
 
   //receive t1
   const t1 = decryptedM3.t1;
+  //receive r2
+  const r2 = decryptedM3.r2;
 
   // XOR k2 and t1
   const k2_t1 = [k2, t1].reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
@@ -96,12 +98,22 @@ static generateM4(decryptedM3: any): any {
   console.log("k2_t1: ", k2_t1);
 
   // Concatenate r2 and t2
-  const r2_t2 = decryptedM3.r2 + this.generateT2();
+  const t2 = this.generateT2();
+  const r2_t2 = r2 + t2;
+
+  //Generate T: Session key
+  this.generateT(t1, t2);
 
   // Generate M4 enctrypted
   const M4_encrypted = CryptoTS.AES.encrypt(r2_t2, k2_t1);
   return JSON.stringify(M4_encrypted);
 }
 
+static generateT(t1: string, t2: string): string {
+  const T = [t1, t2].reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
+  console.log("T - Session Key Generated: ", T);
+  return T;
+  //Here we assume that T is stored in a secure database
+}
 
 }

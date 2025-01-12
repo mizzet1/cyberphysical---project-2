@@ -31,7 +31,13 @@ onAuthenticate() {
         next: (res2) => {
           console.log("Server responded to M3! \n" + "Server message - M4: ", res2.message
           + "\n" + "Server response - M4: ", res2.M4);
+
+          //decrypt M4
+          const decryptedM4 = this.authService.decryptM4(res2.M4);
+
+          //generate t = t1+t1
         },
+
         error: (err2) => {
           if(err2){
             alert("Error: " + err2.message);
