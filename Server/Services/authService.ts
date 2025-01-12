@@ -1,6 +1,7 @@
 import { SecureVaultService } from './secureVaultService';
 import * as CryptoTS from 'crypto-ts';
 import {cache} from "../index";
+import { json } from 'express';
 
 export class AuthService{
 
@@ -26,7 +27,7 @@ static generateM2(){
         r1: r1,
         C1: C1
     }
-    return M2;
+    return JSON.stringify(M2);
 }
 
 // generateC1
@@ -60,22 +61,24 @@ static generateR1(): string{
 
 static generateK1(indices: number[]): string {
   const vault = SecureVaultService.getData();
-  console.log("vault: ", vault);
   // XOR all keys at the given indices
   return indices
     .map((index) => vault[index.toString()]) // Fetch keys as hex strings
     .reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
 }
 
-static decryptM3(m3: string): any {
+static decryptM3(m3: any): any {
 
   const C1 = cache['C1'];
   const k1 = this.generateK1(C1);
-  return CryptoTS.AES.decrypt(m3, k1);
+  var bytes = CryptoTS.AES.decrypt(m3, k1);
+  var m3_string = CryptoTS.enc.Utf8.stringify(bytes);
+  var m3_json = JSON.parse(m3_string);
+  return m3_json;
 }
 
 static generateM4(){
-    const m4 = "abc123";
+    return "abc123";
 }
 
 }

@@ -21,33 +21,33 @@ export class AppComponent {
 
 //onAuthenticate
 onAuthenticate() {
-  alert('Authentication started!');
   console.log("Authentication started!");
-
   //call sendM1
   this.authService.sendM1().subscribe({
-    next: (res) => {
-      alert("Server response: " + res.message);
-      console.log("Server response - M2: ", res.M2);
+    next: (res1) => {
+      console.log("Server message - M2: ", res1.message);
+      console.log("Server response - M2: ", res1.M2);
       
+      const m2_json = JSON.parse(res1.M2);
+      console.log("m2_json: ", m2_json);
       //call sendM3
-      this.authService.sendM3(res.M2.r1, res.M2.C1).subscribe({
-        next: (res) => {
-          alert("Server response: " + res.message);
-          console.log("Server response - M4: ", res);
+      this.authService.sendM3(m2_json.r1, m2_json.C1).subscribe({
+        next: (res2) => {
+          console.log("Server message - M4: ", res2.message);
+          console.log("Server response - M4: ", res2);
         },
-        error: (err) => {
-          if(err){
-            alert("Error: " + err.message);
-            console.log("error: ", err);
+        error: (err2) => {
+          if(err2){
+            alert("Error: " + err2.message);
+            console.log("error: ", err2);
           }
         }
       });
     },
-    error: (err) => {
-      if(err){
-        alert("Error: " + err.message);
-        console.log("error: ", err);
+    error: (err1) => {
+      if(err1){
+        alert("Error: " + err1.message);
+        console.log("error: ", err1);
       }
     }
   });

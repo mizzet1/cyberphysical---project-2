@@ -6,8 +6,11 @@ export const authRouter = express.Router();
 authRouter.use(express.json());
 
 authRouter.post("/m1", async (req: any, res: any) => {
-  const deviceId = req.body.deviceId;
-  const sessionId = req.body.sessionId;
+
+  console.log("response: ", req.body);
+  const M1 = req.body;
+  const deviceId = M1.deviceId;
+  const sessionId = M1.sessionId;
 
   // Check if the request body contains the required fields
   if (!deviceId || !sessionId) {
@@ -22,6 +25,8 @@ authRouter.post("/m1", async (req: any, res: any) => {
       message: 'Message M1 received! Sending Message M2 ...',
       M2: M2
     }
+    console.log("Message M1 received! Sending Message M2 ...");
+    console.log("M2: "+ M2);
     res.status(200).json(M2_response);
   }
   else{
@@ -31,13 +36,18 @@ authRouter.post("/m1", async (req: any, res: any) => {
 });
 
 authRouter.post("/m3", async (req: any, res: any) => {
-  const m3 = req.body;
-  if (!m3) {
+  const M3 = req.body;
+  if (!M3) {
+    console.log("Missing Message M3");
     return res.status(400).json({ error: 'Missing Message M3 ' });
   }
   else{
+    console.log("Message M3 received!");
+    console.log("M3: "+ M3);
     //decrypt M3
-    const decryptedM3 = AuthService.decryptM3(m3);
+    console.log("M3 Decrypting ...");
+    const decryptedM3 = AuthService.decryptM3(M3);
+    console.log("Decrypted M3: ", decryptedM3);
     //if (respose.r1 == myCache.get('r1')) --> genero M4
     if(decryptedM3.r1 == cache['r1']){
       const M4 = AuthService.generateM4(); // if valid Device ID --> generate message M4
@@ -45,6 +55,8 @@ authRouter.post("/m3", async (req: any, res: any) => {
         message: 'Message M3 received! Sending Message M4 ...',
         M4: M4
       }
+      console.log(" Sending Message M4 ...");
+      console.log("M4: "+ M4);
       res.status(200).json(M4_response);
     }
   }

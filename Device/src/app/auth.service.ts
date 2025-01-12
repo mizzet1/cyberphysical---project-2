@@ -22,7 +22,12 @@ generateM1(): any{
   const deviceId = environment.device_id;
   const sessionId = this.generateSessionId();
   // Body data to be sent in the POST request
-  return { deviceId, sessionId };
+  const M1 = {
+    deviceId: deviceId, 
+    sessionId: sessionId
+  };
+  console.log("M1: ", JSON.stringify(M1)); 
+  return JSON.stringify(M1);
 }
 
 sendM1(): Observable<any>{
@@ -80,7 +85,7 @@ generateR2(): string {
   return hex;
 }
 //generateM3
-  generateM3(r1: string, c1: number[]): any {
+  generateM3(r1: string, c1: number[]): string {
   const t1 = this.generateT1();
   const c2 = this.generateC2();
   const r2 = this.generateR2();
@@ -92,10 +97,11 @@ generateR2(): string {
     c2: c2,
     r2: r2
   };
-  const m3_string = m3_json.toString();
-  console.log("M3: ", m3_json);
-  const m3_encrypted = CryptoTS.AES.encrypt(m3_string, k1);
-  return m3_encrypted
+  //const m3_string = m3_json.toString();
+  console.log("M3: ", JSON.stringify(m3_json).toString());
+  const M3_encrypted = CryptoTS.AES.encrypt(JSON.stringify(m3_json), k1);
+  console.log("M3 Encrypted: ", M3_encrypted);
+  return JSON.stringify(M3_encrypted);
 
 }
 
