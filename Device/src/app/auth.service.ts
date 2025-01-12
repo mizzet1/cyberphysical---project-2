@@ -5,7 +5,6 @@ import { environment } from '../environments/environment';
 import { SecureVaultService } from './securevalut.service';
 import * as CryptoTS from 'crypto-ts';
 
-
 @Injectable({
   providedIn: 'root', // This makes the service available application-wide
 })
@@ -26,12 +25,12 @@ generateM1(): any{
     deviceId: deviceId, 
     sessionId: sessionId
   };
-  console.log("M1: ", JSON.stringify(M1)); 
   return JSON.stringify(M1);
 }
 
 sendM1(): Observable<any>{
   const body = this.generateM1();
+  console.log("CLIENT: Sending message M1: ", body);
   return this.http.post('http://localhost:3000/auth/m1', body, {headers: this.headers});
 }
 
@@ -94,13 +93,12 @@ generateR2(): string {
   {
     r1: r1,
     t1: t1,
-    c2: c2,
+    C2: c2,
     r2: r2
   };
   //const m3_string = m3_json.toString();
-  console.log("M3: ", JSON.stringify(m3_json).toString());
+  console.log("CLIENT: \nGenerating M3 ... \nM3: ", JSON.stringify(m3_json).toString());
   const M3_encrypted = CryptoTS.AES.encrypt(JSON.stringify(m3_json), k1);
-  console.log("M3 Encrypted: ", M3_encrypted);
   return JSON.stringify(M3_encrypted);
 
 }
@@ -108,7 +106,10 @@ generateR2(): string {
 //sendM3
 sendM3(r1: string, c1: number[]): Observable<any> {
   const body = this.generateM3(r1, c1);
+  console.log("CLIENT: \nSending message M3 Encrypted: ", body);
   return this.http.post('http://localhost:3000/auth/m3', body, {headers: this.headers});
 }
+
+
 
 }

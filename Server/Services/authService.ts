@@ -44,10 +44,8 @@ static generateC1(): number[] {
       indeces.splice(current_index,1); 
     }
     cache['C1'] = c1 ;
-    console.log("cache[C1]: ", cache['C1']);
     return c1;
 }
-
 
 static generateR1(): string{
     // Generate a random 64-bit (16-character) hexadecimal string
@@ -55,11 +53,10 @@ static generateR1(): string{
       Math.floor(Math.random() * 16).toString(16)
     ).join('');
     cache['r1'] = r1;
-    console.log("cache[r1]: ", cache['r1']);
     return r1;
 }
 
-static generateK1(indices: number[]): string {
+static generateKey(indices: number[]): string {
   const vault = SecureVaultService.getData();
   // XOR all keys at the given indices
   return indices
@@ -70,15 +67,41 @@ static generateK1(indices: number[]): string {
 static decryptM3(m3: any): any {
 
   const C1 = cache['C1'];
-  const k1 = this.generateK1(C1);
+  console.log(C1);
+  const k1 = this.generateKey(C1);
   var bytes = CryptoTS.AES.decrypt(m3, k1);
   var m3_string = CryptoTS.enc.Utf8.stringify(bytes);
   var m3_json = JSON.parse(m3_string);
   return m3_json;
 }
 
-static generateM4(){
-    return "abc123";
+static generateT2(): string{
+  // Generate a random 64-bit (16-character) hexadecimal string
+  const hex = Array.from({ length: 16 }, () =>
+    Math.floor(Math.random() * 16).toString(16)
+  ).join('');
+  return hex;
 }
+
+static generateM4(decryptedM3: any): any {
+  //generate k2 (through C2)
+  const k2 = this.generateKey(decryptedM3.C2);
+
+  //receive t1
+  const t1 = decryptedM3.t1;
+
+  // XOR k2 and t1
+  const k2_t1 = [k2, t1].reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
+  console.log("k2: " + k2 + "\n" + "t1: " + t1);
+  console.log("k2_t1: ", k2_t1);
+
+  // Concatenate r2 and t2
+  const r2_t2 = decryptedM3.r2 + this.generateT2();
+
+  // Generate M4 enctrypted
+  const M4_encrypted = CryptoTS.AES.encrypt(r2_t2, k2_t1);
+  return JSON.stringify(M4_encrypted);
+}
+
 
 }

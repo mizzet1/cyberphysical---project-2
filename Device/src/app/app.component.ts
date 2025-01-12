@@ -14,27 +14,23 @@ export class AppComponent {
   private headers: HttpHeaders = new HttpHeaders({
     'Content-Type':  'application/json'
   });
-
-  
   constructor(private authService: AuthService) {}
-
 
 //onAuthenticate
 onAuthenticate() {
-  console.log("Authentication started!");
+  console.log("CLIENT: Authentication started!");
   //call sendM1
   this.authService.sendM1().subscribe({
     next: (res1) => {
-      console.log("Server message - M2: ", res1.message);
-      console.log("Server response - M2: ", res1.M2);
-      
+      console.log("Server responded to M1! \n" + "Server message - M2: "+ res1.message 
+        + "\n" + "Server response - M2: "+ res1.M2);
+
       const m2_json = JSON.parse(res1.M2);
-      console.log("m2_json: ", m2_json);
       //call sendM3
       this.authService.sendM3(m2_json.r1, m2_json.C1).subscribe({
         next: (res2) => {
-          console.log("Server message - M4: ", res2.message);
-          console.log("Server response - M4: ", res2);
+          console.log("Server responded to M3! \n" + "Server message - M4: ", res2.message
+          + "\n" + "Server response - M4: ", res2.M4);
         },
         error: (err2) => {
           if(err2){
