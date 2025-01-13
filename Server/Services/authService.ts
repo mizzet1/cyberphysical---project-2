@@ -13,7 +13,7 @@ static checkDeviceId(device_id: string, session_id: string): boolean {
       if (device_id == device.device_id.toString()) {
         found = true;
         //save session_id of the device
-        device.session_id = session_id;
+        device['session_id'] = session_id;
       } 
     });
     return found;

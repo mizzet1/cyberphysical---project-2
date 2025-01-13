@@ -124,9 +124,6 @@ decryptM4(m4: string): any {
   var bytes = CryptoTS.AES.decrypt(m4, k2_t1).toString(CryptoTS.enc.Utf8);
   console.log("CLIENT: \n bytes M4: " + bytes);
 
-  // var m4_string = CryptoTS.enc.Utf8.stringify(bytes);
-  // console.log("CLIENT: \ M4 String: ", m4_string);
-
   var m4_json = JSON.parse(bytes);
   console.log("CLIENT: \nDecrypted M4: ", bytes);
 
