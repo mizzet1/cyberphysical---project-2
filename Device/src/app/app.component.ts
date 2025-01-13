@@ -31,13 +31,19 @@ onAuthenticate() {
         next: (res2) => {
           console.log("Server responded to M3! \n" + "Server message - M4: ", res2.message
           + "\n" + "Server response - M4: ", res2.M4);
-
+          
           //decrypt M4
           const decryptedM4 = this.authService.decryptM4(res2.M4);
-
-          //generate t = t1+t1
+          
+          //verify decryptedM4.r1 = cache['r1']
+          if(decryptedM4.r1 == localStorage.getItem('r1')){
+            //generate T = t1+t2  
+            const t1 = localStorage.getItem('t1')!;
+            const t2 = decryptedM4.t2;
+            this.authService.generateT(t1, t2);
+          }
         },
-
+    
         error: (err2) => {
           if(err2){
             alert("Error: " + err2.message);

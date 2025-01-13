@@ -53,10 +53,11 @@ generateK1(indices: number[]): string {
 // generateT1
 generateT1(): string{
   // Generate a random 64-bit (16-character) hexadecimal string
-  const hex = Array.from({ length: 16 }, () =>
+  const t1 = Array.from({ length: 16 }, () =>
     Math.floor(Math.random() * 16).toString(16)
   ).join('');
-  return hex;
+  localStorage.setItem('t1', t1);
+  return t1;
 }
 
 //generateC2
@@ -72,6 +73,7 @@ generateC2(): number[] {
     c2.push(indeces[current_index]);
     indeces.splice(current_index,1); 
   }
+  localStorage.setItem('C2', JSON.stringify(c2));
   return c2;
 }
 
@@ -110,8 +112,35 @@ sendM3(r1: string, c1: number[]): Observable<any> {
   return this.http.post('http://localhost:3000/auth/m3', body, {headers: this.headers});
 }
 
-decryptM4(m4: any): any {
+decryptM4(m4: string): any {
+  const C2 = JSON.parse(localStorage.getItem('C2')!);
+  const k2 = this.generateK1(C2);
+  const t1 = localStorage.getItem('t1')!; 
+  //XOR t1 and k2
+  const k2_t1 = [k2, t1].reduce((acc, key) => (BigInt(`0x${acc}`) ^ BigInt(`0x${key}`)).toString(16), '0');
+
+  console.log("k2_t1: ", k2_t1);
+
+  var bytes = CryptoTS.AES.decrypt(m4, k2_t1).toString(CryptoTS.enc.Utf8);
+  console.log("CLIENT: \n bytes M4: " + bytes);
+
+  // var m4_string = CryptoTS.enc.Utf8.stringify(bytes);
+  // console.log("CLIENT: \ M4 String: ", m4_string);
+
+  var m4_json = JSON.parse(bytes);
+  console.log("CLIENT: \nDecrypted M4: ", bytes);
+
+  return m4_json;
+}
+
+generateT(t1: string, t2: string): void{
+  const bigIntt1: bigint = BigInt(`0x${t1}`);
+  const bigIntt2: bigint = BigInt(`0x${t2}`);
+  const T = ( bigIntt1 ^ bigIntt2).toString(16);
+  console.log("CLIENT: \nT - Session Key Generated: ", T);
+  //Here we assume that T is stored in a secure database
+}
 }
 
 
-}
+

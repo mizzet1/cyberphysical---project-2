@@ -93,26 +93,31 @@ static generateM4(decryptedM3: any): any {
   const r2 = decryptedM3.r2;
 
   // XOR k2 and t1
-  const k2_t1 = [k2, t1].reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
+  const k2_t1 = [k2, t1].reduce((acc, key) => (BigInt(`0x${acc}`) ^ BigInt(`0x${key}`)).toString(16), '0');
   console.log("k2: " + k2 + "\n" + "t1: " + t1);
   console.log("k2_t1: ", k2_t1);
 
   // Concatenate r2 and t2
   const t2 = this.generateT2();
-  const r2_t2 = r2 + t2;
+
+  const m4_payload = JSON.stringify({
+    r2: r2,
+    t2: t2
+  });
 
   //Generate T: Session key
   this.generateT(t1, t2);
 
   // Generate M4 enctrypted
-  const M4_encrypted = CryptoTS.AES.encrypt(r2_t2, k2_t1);
-  return JSON.stringify(M4_encrypted);
+  const M4_encrypted = CryptoTS.AES.encrypt(m4_payload, k2_t1).toString();
+  return M4_encrypted;
 }
 
-static generateT(t1: string, t2: string): string {
-  const T = [t1, t2].reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
+static generateT(t1: string, t2: string): void {
+  const bigIntt1: bigint = BigInt(`0x${t1}`);
+  const bigIntt2: bigint = BigInt(`0x${t2}`);
+  const T = ( bigIntt1 ^ bigIntt2).toString(16);
   console.log("T - Session Key Generated: ", T);
-  return T;
   //Here we assume that T is stored in a secure database
 }
 
