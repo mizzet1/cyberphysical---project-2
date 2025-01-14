@@ -1,11 +1,11 @@
 import { SecureVaultService } from './secureVaultService';
 import * as CryptoTS from 'crypto-ts';
 import {cache} from "../index";
-import { json } from 'express';
+const fs = require('fs');
+const crypto = require('crypto');
 
 export class AuthService{
 
-//Check if DeviceId of the request is known to server
 static checkDeviceId(device_id: string, session_id: string): boolean {
     const data = require("../devices.json");
     let found: boolean = false;
@@ -19,7 +19,6 @@ static checkDeviceId(device_id: string, session_id: string): boolean {
     return found;
 }
 
-//generate M2
 static generateM2(){
     const r1 = this.generateR1();
     const C1 = this.generateC1();
@@ -30,7 +29,6 @@ static generateM2(){
     return JSON.stringify(M2);
 }
 
-// generateC1
 static generateC1(): number[] {
     const c1: number[] = [];
     // Generates p, a random number from 2 and 7 (i.e. at least 2 keys, at most 7 (n-1) keys). 
@@ -67,7 +65,6 @@ static generateKey(indices: number[]): string {
 static decryptM3(m3: any): any {
 
   const C1 = cache['C1'];
-  console.log(C1);
   const k1 = this.generateKey(C1);
   var bytes = CryptoTS.AES.decrypt(m3, k1);
   var m3_string = CryptoTS.enc.Utf8.stringify(bytes);
@@ -92,14 +89,15 @@ static generateM4(decryptedM3: any): any {
   //receive r2
   const r2 = decryptedM3.r2;
 
-  // XOR k2 and t1
-  const k2_t1 = [k2, t1].reduce((acc, key) => (BigInt(`0x${acc}`) ^ BigInt(`0x${key}`)).toString(16), '0');
-  console.log("k2: " + k2 + "\n" + "t1: " + t1);
-  console.log("k2_t1: ", k2_t1);
-
-  // Concatenate r2 and t2
+  //generate t2
   const t2 = this.generateT2();
 
+  // XOR k2 and t1
+  const k2_t1 = [k2, t1].reduce((acc, key) => (BigInt(`0x${acc}`) ^ BigInt(`0x${key}`)).toString(16), '0');
+  console.log("k2: " + k2 + "\n" + "t1: " + t1 + "\n" 
+    + "k2_XOR_t1: ", k2_t1 + "\n" + "t2: ", t2 );
+
+  // Concatenate r2 and t2
   const m4_payload = JSON.stringify({
     r2: r2,
     t2: t2
@@ -119,6 +117,44 @@ static generateT(t1: string, t2: string): void {
   const T = ( bigIntt1 ^ bigIntt2).toString(16);
   console.log("T - Session Key Generated: ", T);
   //Here we assume that T is stored in a secure database
+}
+
+static getDataExchanges(): any {
+  try {
+    const path = require("path");
+    const rawData = fs.readFileSync(path.resolve(__dirname, '../data_exchanged.json'), "utf-8");
+    return JSON.parse(rawData); 
+  } catch (err) {
+    console.error('Error reading the file:', err);
+    return null;
+  }
+}
+
+static changeSecureVault(): void {
+  const new_vault : { [key: string]: string } = {};
+
+  //get vault
+  const currentVault = JSON.stringify(SecureVaultService.getData());
+  //get messages
+  const dataExchanged = JSON.stringify(this.getDataExchanges());
+  //Compute H
+  const h = crypto.createHmac('sha256', dataExchanged).update(currentVault).digest('hex');
+  console.log("H: ", h);
+  //split current secure vault into j equal partitions
+  // since secure_vault.size = 1024 bits, k = 256 bits ==> j = 1024/256 = 8
+  var p = SecureVaultService.getData();
+
+  // generate new secure vault with j partitions Pi XOR (h XOR i) , where i is the index of the partition
+  Object.keys(p).forEach((key, i=1) => {
+    const h_xor_i = h ^ i//BigInt(`0x${h}`) ^ BigInt(`0x${i}`); // XOR constant h with the index i
+    var element = p[key];
+    const result_i = element ^ h_xor_i//BigInt(`0x${element}`) ^ h_xor_i; // XOR the element with xorValue
+    console.log("Result_i: ", result_i.toString());
+    new_vault[key] = result_i.toString(16);
+  });
+  SecureVaultService.setData(new_vault);
+  console.log("Secure Vault changed!" + "\nNew Secure Vault: ", SecureVaultService.getData());
+
 }
 
 }

@@ -7,10 +7,11 @@ authRouter.use(express.json());
 
 authRouter.post("/m1", async (req: any, res: any) => {
 
-  console.log("response: ", req.body);
+  console.log("SERVER: Device Authentication request \n Client Message M1: ", req.body);
   const M1 = req.body;
   const deviceId = M1.deviceId;
   const sessionId = M1.sessionId;
+  const duration = M1.duration;
 
   // Check if the request body contains the required fields
   if (!deviceId || !sessionId) {
@@ -25,8 +26,15 @@ authRouter.post("/m1", async (req: any, res: any) => {
       message: 'Message M1 received! Sending Message M2 ...',
       M2: M2
     }
-    console.log("Message M1 received! Sending Message M2 ...");
-    console.log("M2: "+ M2);
+    console.log("SERVER: Sending Message M2 ..." + "\nM2: "+ M2);
+
+    //Set timeout 
+    setTimeout(() => { 
+      //reset session ID and Change secure vault
+      AuthService.changeSecureVault();
+
+    } , duration );
+
     res.status(200).json(M2_response);
   }
   else{
@@ -42,8 +50,7 @@ authRouter.post("/m3", async (req: any, res: any) => {
     return res.status(400).json({ error: 'Missing Message M3 ' });
   }
   else{
-    console.log("Message M3 received!");
-    console.log("M3: "+ M3);
+    console.log("SERVER: Received Message M3!");
     //decrypt M3
     console.log("M3 Decrypting ...");
     const decryptedM3 = AuthService.decryptM3(M3);

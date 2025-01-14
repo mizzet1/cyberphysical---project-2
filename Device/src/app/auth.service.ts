@@ -23,7 +23,8 @@ generateM1(): any{
   // Body data to be sent in the POST request
   const M1 = {
     deviceId: deviceId, 
-    sessionId: sessionId
+    sessionId: sessionId,
+    duration : 2000
   };
   return JSON.stringify(M1);
 }

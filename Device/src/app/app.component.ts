@@ -43,7 +43,6 @@ onAuthenticate() {
             this.authService.generateT(t1, t2);
           }
         },
-    
         error: (err2) => {
           if(err2){
             alert("Error: " + err2.message);

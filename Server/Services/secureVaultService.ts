@@ -22,10 +22,20 @@ static setData(newData: any) {
   try {
     const dataToWrite = JSON.stringify(newData, null, 2); // Convert object back to JSON
     fs.writeFileSync(this.filePath, dataToWrite, 'utf8'); // Write the updated data back to the file
-    console.log('File updated successfully');
+    
   } catch (err) {
     console.error('Error writing to the file:', err);
   }
+  console.log('File updated successfully');
+}
+
+static updateSecureVault(index: string, value: string) {
+  // Get the current data from the JSON file
+  const currentData = this.getData();
+  // Update the value of the specified index
+  currentData[index] = value;
+  // Write the updated data back to the JSON file
+  this.setData(currentData);
 }
 
 }
