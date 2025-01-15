@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { SecureVaultService } from './securevalut.service';
 import * as CryptoTS from 'crypto-ts';
-const crypto = require('crypto');
+import * as CryptoJS from 'crypto-js';
 import { BinaryUtils } from './binaryUtils';
 const data_exchanged = '../src/assets/data_exchanged' 
 
@@ -170,8 +170,7 @@ changeSecureVault(): void {
   //get messages
   const dataExchanged = JSON.stringify(data_exchanged);
   //Compute H
-  const h = crypto.createHmac('sha256', dataExchanged).update(currentVault).digest('hex');
-  console.log("H: ", h);
+  const h = CryptoJS.HmacSHA256(currentVault, dataExchanged).toString(CryptoJS.enc.Hex);  console.log("H: ", h);
   //split current secure vault into j equal partitions
   // since secure_vault.size = 1024 bits, k = 256 bits ==> j = 1024/256 = 8
   var p = this.secureVaultService.getVault()
