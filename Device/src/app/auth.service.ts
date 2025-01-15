@@ -44,31 +44,7 @@ generateSessionId(){
   return sessionId;
 }
  
-// //generateKey k
-// generateK1(indices: number[]): string {
-//   const vault = this.secureVaultService.getVault();
-//   // XOR all keys at the given indices
-//   return indices
-//     .map((index) => vault[index.toString()]) // Fetch keys as hex strings
-//     .reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
-// }
-
-// generateK1(indices: number[]) {
-//   const vault = this.secureVaultService.getVault();
-//   console.log("indices: ", indices)
-//   // XOR all keys at the given indices
-//   //const vault: { [key: string]: string } = secure_vault;
-//   const values = indices.map((index) => {
-//     const key = vault[index.toString()];
-//     return BinaryUtils.Hex_to256BitBinary(key);
-//   });
-//   console.log(values);
-  
-//   //values.map((value) => (BinaryUtils.Hex_to256BitBinary(value)))
-//   const values2 = values.reduce((acc, key) => (BinaryUtils.xor_BinaryStrings(acc, key))); // 256 bits
-//   return BinaryUtils.binary_ToHex(values2);
-// }
-
+// //generateKey k1
 generateK1(indices: number[]) {
   const vault = this.secureVaultService.getVault();
   
