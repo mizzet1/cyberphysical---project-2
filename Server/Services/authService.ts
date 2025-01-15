@@ -109,7 +109,7 @@ static generateM4(decryptedM3: any): any {
   const t2 = this.generateT2();
 
   // XOR k2 and t1
-  const k2_t1 = BinaryUtils.xorHexStrings(k2, t1);//[k2, t1].reduce((acc, key) => (BigInt(`0x${acc}`) ^ BigInt(`0x${key}`)).toString(16), '0');
+  const k2_t1 = BinaryUtils.xorHexStrings(k2, t1);
   console.log("k2: " + k2 + "\n" + "t1: " + t1 + "\n" 
     + "k2_XOR_t1: ", k2_t1 + "\n" + "t2: ", t2 );
 
@@ -135,7 +135,7 @@ static generateT(t1: string, t2: string): void {
   //Here we assume that T is stored in a secure database
 }
 
-static getDataExchanges(): any {
+static getDataExchanged(): any {
   try {
     const path = require("path");
     const rawData = fs.readFileSync(path.resolve(__dirname, '../data_exchanged.json'), "utf-8");
@@ -152,7 +152,7 @@ static changeSecureVault(): void {
   //get vault
   const currentVault = JSON.stringify(SecureVaultService.getData());
   //get messages
-  const dataExchanged = JSON.stringify(this.getDataExchanges());
+  const dataExchanged = JSON.stringify(this.getDataExchanged());
   //Compute H
   const h = crypto.createHmac('sha256', dataExchanged).update(currentVault).digest('hex');
   console.log("H: ", h);

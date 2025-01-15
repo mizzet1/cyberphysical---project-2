@@ -28,12 +28,9 @@ authRouter.post("/m1", async (req: any, res: any) => {
     }
     console.log("SERVER: Sending Message M2 ..." + "\nM2: "+ M2);
 
-    //Set timeout 
+    //Set timeout to change secure vault
     setTimeout(() => { 
-      //reset session ID and Change secure vault
-      AuthService.changeSecureVault();
-
-    } , duration );
+      AuthService.changeSecureVault()} ,duration );
 
     res.status(200).json(M2_response);
   }

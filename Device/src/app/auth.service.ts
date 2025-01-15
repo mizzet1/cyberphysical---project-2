@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { SecureVaultService } from './securevalut.service';
 import * as CryptoTS from 'crypto-ts';
+const crypto = require('crypto');
 import { BinaryUtils } from './binaryUtils';
+const data_exchanged = '../src/assets/data_exchanged' 
 
 @Injectable({
   providedIn: 'root', // This makes the service available application-wide
@@ -19,7 +21,7 @@ export class AuthService {
 
 
 //generateM1
-generateM1(): any{
+generateM1(): string {
   const deviceId = environment.device_id;
   const sessionId = this.generateSessionId();
   // Body data to be sent in the POST request
@@ -31,8 +33,8 @@ generateM1(): any{
   return JSON.stringify(M1);
 }
 
-sendM1(): Observable<any>{
-  const body = this.generateM1();
+sendM1(m1: string): Observable<any>{
+  const body = m1;
   console.log("CLIENT: Sending message M1: ", body);
   return this.http.post('http://localhost:3000/auth/m1', body, {headers: this.headers});
 }
@@ -153,11 +155,59 @@ decryptM4(m4: string): any {
 }
 
 generateT(t1: string, t2: string): void{
-  // const bigIntt1: bigint = BigInt(`0x${t1}`);
-  // const bigIntt2: bigint = BigInt(`0x${t2}`);
   const T = BinaryUtils.xorHexStrings(t1, t2);
   console.log("T - Session Key Generated: ", T);
   //Here we assume that T is stored in a secure database
+}
+
+
+changeSecureVault(): void {
+  console.log("Changing Secure Vault");
+  const new_vault : { [key: string]: string } = {};
+
+  //get vault
+  const currentVault = JSON.stringify(this.secureVaultService.getVault());
+  //get messages
+  const dataExchanged = JSON.stringify(data_exchanged);
+  //Compute H
+  const h = crypto.createHmac('sha256', dataExchanged).update(currentVault).digest('hex');
+  console.log("H: ", h);
+  //split current secure vault into j equal partitions
+  // since secure_vault.size = 1024 bits, k = 256 bits ==> j = 1024/256 = 8
+  var p = this.secureVaultService.getVault()
+
+  // generate new secure vault with j partitions Pi XOR (h XOR i) , where i is the index of the partition
+  Object.keys(p).forEach((key, i) => {
+    const h_bin = BinaryUtils.Hex_to256BitBinary(h);
+    const i_bin = BinaryUtils.Number_to256BitBinary(i);
+    const h_xor_i = BinaryUtils.xor_BinaryStrings(h_bin, i_bin);
+
+    const partition: string = p[key];
+    const partition_bin = BinaryUtils.Hex_to256BitBinary(partition);
+
+    const result_i_bin = BinaryUtils.xor_BinaryStrings(partition_bin, h_xor_i);
+    const result_i = BinaryUtils.binary_ToHex(result_i_bin);
+
+    new_vault[key] = result_i;
+  });
+  
+  this.secureVaultService.setVault(new_vault);
+  console.log("Secure Vault changed!" + "\nNew Secure Vault: ", new_vault);
+
+  // h  XOR i = (256 bit) XOR (256 bit) = 256 bit
+
+  // element XOR (h XOR i) = 128 (to pad) XOR 256 bit = 256 bit
+
+  /**
+    * CONVERT SECURE VAULT TO 64 HEX CHARACTERS !!!
+   * 1. convert h to binary 256
+   * 2 i = convert i to binary 256
+   * 3. h_xor_i = XOR h and i (256 bits)
+   * 4 convert partition to binary 256
+   * 5. partition_xor_h_xor_i = XOR partition and h_xor_i (256 bits)
+   * 6. convert partition_xor_h_xor_i to hex (64 characters)
+   */
+
 }
 }
 

@@ -20,10 +20,17 @@ export class AppComponent {
 onAuthenticate() {
   console.log("CLIENT: Authentication started!");
   //call sendM1
-  this.authService.sendM1().subscribe({
+  const m1 = this.authService.generateM1();
+  this.authService.sendM1(m1).subscribe({
     next: (res1) => {
       console.log("Server responded to M1! \n" + "Server message - M2: "+ res1.message 
         + "\n" + "Server response - M2: "+ res1.M2);
+
+      //Only if server responds it start the counter( this becasue an attacker can forge M1, 
+      //set duration = inf and block the authentication idenfinitely)
+      //Set timeout 
+      console.log("Timeout of " + JSON.parse(m1).duration + "started!");
+      setTimeout(() => {this.authService.changeSecureVault()}, JSON.parse(m1).duration); 
 
       const m2_json = JSON.parse(res1.M2);
       //call sendM3
