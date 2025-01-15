@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const path = require("path");
 export class SecureVaultService{
 
 // File path of the JSON file
@@ -8,7 +8,6 @@ private static filePath: string = '../secure_vault.json';
 // Function to read and parse the JSON file
 static getData() {
   try {
-    const path = require("path");
     const rawData = fs.readFileSync(path.resolve(__dirname, this.filePath), "utf-8");
     return JSON.parse(rawData); // Parse the JSON string into an object
   } catch (err) {
@@ -21,7 +20,7 @@ static getData() {
 static setData(newData: any) {
   try {
     const dataToWrite = JSON.stringify(newData, null, 2); // Convert object back to JSON
-    fs.writeFileSync(this.filePath, dataToWrite, 'utf8'); // Write the updated data back to the file
+    fs.writeFileSync(path.resolve(__dirname, this.filePath), dataToWrite, "utf-8"); // Write the updated data back to the file
     
   } catch (err) {
     console.error('Error writing to the file:', err);

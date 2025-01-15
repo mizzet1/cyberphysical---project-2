@@ -3,6 +3,8 @@ import * as CryptoTS from 'crypto-ts';
 import {cache} from "../index";
 const fs = require('fs');
 const crypto = require('crypto');
+import { BinaryUtils } from './binaryUtils';
+import secure_vault from '../secure_vault.json';
 
 export class AuthService{
 
@@ -54,27 +56,41 @@ static generateR1(): string{
     return r1;
 }
 
-static generateKey(indices: number[]): string {
+static generateKey(indices: number[]) {
   const vault = SecureVaultService.getData();
-  // XOR all keys at the given indices
-  return indices
-    .map((index) => vault[index.toString()]) // Fetch keys as hex strings
-    .reduce((acc, key) => (parseInt(acc, 16) ^ parseInt(key, 16)).toString(16), '0');
+
+  const values = indices.map((index) => {
+    index++;
+    const key = vault[index.toString()];
+    return key;
+  });
+  
+  const values2 = values.reduce((acc, key) => (BinaryUtils.xorHexStrings(acc, key))); // 256 bits
+  return values2;
 }
+
 
 static decryptM3(m3: any): any {
 
   const C1 = cache['C1'];
   const k1 = this.generateKey(C1);
+  //consl
+  console.log("k1:" + k1);
   var bytes = CryptoTS.AES.decrypt(m3, k1);
+  console.log("bytes ", bytes);
+
   var m3_string = CryptoTS.enc.Utf8.stringify(bytes);
+  console.log("m3_string ", m3_string);
+
   var m3_json = JSON.parse(m3_string);
+  console.log("m3_json ", m3_json);
+
   return m3_json;
 }
 
 static generateT2(): string{
-  // Generate a random 64-bit (16-character) hexadecimal string
-  const hex = Array.from({ length: 16 }, () =>
+  // Generate a random 256-bit (64-character) hexadecimal string
+  const hex = Array.from({ length: 64 }, () =>
     Math.floor(Math.random() * 16).toString(16)
   ).join('');
   return hex;
@@ -93,7 +109,7 @@ static generateM4(decryptedM3: any): any {
   const t2 = this.generateT2();
 
   // XOR k2 and t1
-  const k2_t1 = [k2, t1].reduce((acc, key) => (BigInt(`0x${acc}`) ^ BigInt(`0x${key}`)).toString(16), '0');
+  const k2_t1 = BinaryUtils.xorHexStrings(k2, t1);//[k2, t1].reduce((acc, key) => (BigInt(`0x${acc}`) ^ BigInt(`0x${key}`)).toString(16), '0');
   console.log("k2: " + k2 + "\n" + "t1: " + t1 + "\n" 
     + "k2_XOR_t1: ", k2_t1 + "\n" + "t2: ", t2 );
 
@@ -112,9 +128,9 @@ static generateM4(decryptedM3: any): any {
 }
 
 static generateT(t1: string, t2: string): void {
-  const bigIntt1: bigint = BigInt(`0x${t1}`);
-  const bigIntt2: bigint = BigInt(`0x${t2}`);
-  const T = ( bigIntt1 ^ bigIntt2).toString(16);
+  // const bigIntt1: bigint = BigInt(`0x${t1}`);
+  // const bigIntt2: bigint = BigInt(`0x${t2}`);
+  const T = BinaryUtils.xorHexStrings(t1, t2);
   console.log("T - Session Key Generated: ", T);
   //Here we assume that T is stored in a secure database
 }
@@ -145,16 +161,38 @@ static changeSecureVault(): void {
   var p = SecureVaultService.getData();
 
   // generate new secure vault with j partitions Pi XOR (h XOR i) , where i is the index of the partition
-  Object.keys(p).forEach((key, i=1) => {
-    const h_xor_i = h ^ i//BigInt(`0x${h}`) ^ BigInt(`0x${i}`); // XOR constant h with the index i
-    var element = p[key];
-    const result_i = element ^ h_xor_i//BigInt(`0x${element}`) ^ h_xor_i; // XOR the element with xorValue
-    console.log("Result_i: ", result_i.toString());
-    new_vault[key] = result_i.toString(16);
+  Object.keys(p).forEach((key, i) => {
+    const h_bin = BinaryUtils.Hex_to256BitBinary(h);
+    const i_bin = BinaryUtils.Number_to256BitBinary(i);
+    const h_xor_i = BinaryUtils.xor_BinaryStrings(h_bin, i_bin);
+
+    const partition: string = p[key];
+    const partition_bin = BinaryUtils.Hex_to256BitBinary(partition);
+
+    const result_i_bin = BinaryUtils.xor_BinaryStrings(partition_bin, h_xor_i);
+    const result_i = BinaryUtils.binary_ToHex(result_i_bin);
+
+    new_vault[key] = result_i;
   });
+  
   SecureVaultService.setData(new_vault);
-  console.log("Secure Vault changed!" + "\nNew Secure Vault: ", SecureVaultService.getData());
+  console.log("Secure Vault changed!" + "\nNew Secure Vault: ", new_vault);
+
+  // h  XOR i = (256 bit) XOR (256 bit) = 256 bit
+
+  // element XOR (h XOR i) = 128 (to pad) XOR 256 bit = 256 bit
+
+  /**
+    * CONVERT SECURE VAULT TO 64 HEX CHARACTERS !!!
+   * 1. convert h to binary 256
+   * 2 i = convert i to binary 256
+   * 3. h_xor_i = XOR h and i (256 bits)
+   * 4 convert partition to binary 256
+   * 5. partition_xor_h_xor_i = XOR partition and h_xor_i (256 bits)
+   * 6. convert partition_xor_h_xor_i to hex (64 characters)
+   */
 
 }
 
 }
+
