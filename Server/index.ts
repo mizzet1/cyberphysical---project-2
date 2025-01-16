@@ -2,6 +2,8 @@ const express = require('express');
 import * as http from "http";
 const dotenv = require('dotenv');
 import {authRouter} from "./Routes/auth";
+import { SecureVaultService } from './Services/secureVaultService';
+
 const cors = require('cors');  // CommonJS style import
 
 dotenv.config();
@@ -34,4 +36,7 @@ app.use("/auth", authRouter);
 let server = http.createServer(app);
 
 
-server.listen(port, ()=>console.log(`Server is running on http://localhost:${port}`));
+
+SecureVaultService.initializeSecureVault().then(()=>{
+  server.listen(port, ()=>console.log(`Server is running on http://localhost:${port}`))});
+

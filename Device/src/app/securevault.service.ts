@@ -3,9 +3,22 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class SecureVaultService {
+export class SecureVaultService{
   
-  private secureVault: { [key: string]: string } = 
+  private secureVault: { [key: string]: string } ={}
+  // Store a new secure vault locally in the service
+  setVault(vault: { [key: string]: string }) {
+    this.secureVault = vault;
+  }
+
+  // Retrieve the secure vault for use
+  getVault(): { [key: string]: string } {
+    return this.secureVault;
+  }
+
+   // Function to write data back to the JSON file and return a promise
+  async initializeSecureVault() {
+  const secureVault: { [key: string]: string } = 
   {
     "1": "7681F837D840F13A37EB1AABCACD1EF94B300776E1BC62FB53118E50241C100E",
     "2": "8FBBA414C20824F42EE403CCF093870D881A46915A2131C09C48E46B89C78556",
@@ -16,14 +29,14 @@ export class SecureVaultService {
     "7": "24C20223C078F0AE4F5A9CA1708683F736833A7474BA0A743B35551A3B65469B",
     "8": "CC3E397CFE1B219C9DEEEB26A4A66E89015A29B3D8473AB44D418E49054A1774"
   }
-
-  // Store a new secure vault locally in the service
-  setVault(vault: { [key: string]: string }) {
-    this.secureVault = vault;
+  try {
+    // Use fs.promises.writeFile to write data asynchronously
+    await this.setVault(secureVault);
+    console.log('Secure Vault initialized successfully!');
+    return Promise.resolve(); // Fulfill the promise when the write is successful
+  } catch (err) {
+    console.error('Error during initialization of secure vault:', err);
+    return Promise.reject(err); // Reject the promise if an error occurs
   }
-
-  // Retrieve the secure vault for use
-  getVault(): { [key: string]: string } {
-    return this.secureVault;
-  }
+}
 }

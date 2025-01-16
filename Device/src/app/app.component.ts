@@ -1,7 +1,8 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './auth.service';
+import { SecureVaultService } from './securevault.service';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +10,16 @@ import { AuthService } from './auth.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
 
   private headers: HttpHeaders = new HttpHeaders({
     'Content-Type':  'application/json'
   });
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private secureVaultService: SecureVaultService) {}
+  
+  ngOnInit(): void {
+    this.secureVaultService.initializeSecureVault();
+  }
 
 //onAuthenticate
 onAuthenticate() {

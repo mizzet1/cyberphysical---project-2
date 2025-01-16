@@ -38,6 +38,7 @@ const express = require('express');
 const http = __importStar(require("http"));
 const dotenv = require('dotenv');
 const auth_1 = require("./Routes/auth");
+const secureVaultService_1 = require("./Services/secureVaultService");
 const cors = require('cors'); // CommonJS style import
 dotenv.config();
 const port = process.env.PORT;
@@ -60,4 +61,6 @@ app.get('/', (req, res) => {
 app.use("/auth", auth_1.authRouter);
 // Start the server
 let server = http.createServer(app);
-server.listen(port, () => console.log(`Server is running on http://localhost:${port}`));
+secureVaultService_1.SecureVaultService.initializeSecureVault().then(() => {
+    server.listen(port, () => console.log(`Server is running on http://localhost:${port}`));
+});

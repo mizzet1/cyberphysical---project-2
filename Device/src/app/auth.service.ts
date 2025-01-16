@@ -163,7 +163,7 @@ generateT(t1: string, t2: string): void{
 
 
 changeSecureVault(): void {
-  console.log("Changing Secure Vault");
+  console.log("Changing Secure Vault ...");
   const new_vault : { [key: string]: string } = {};
 
   //get vault
@@ -171,8 +171,8 @@ changeSecureVault(): void {
   //get messages
   const dataExchanged = JSON.stringify(this.dataExchangedService.getData());
 
-  console.log("current vault ", currentVault);
-  console.log("data exch: ", dataExchanged);
+  console.log("Current Vault:\n", currentVault);
+  console.log("Data Exchanged:\n", dataExchanged);
 
   //Compute H
   const h = CryptoJS.HmacSHA256(currentVault, dataExchanged).toString(CryptoJS.enc.Hex);  
