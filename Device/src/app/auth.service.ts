@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
 import { environment } from '../environments/environment';
-import { SecureVaultService } from './securevalut.service';
+import { SecureVaultService } from './securevault.service';
 import * as CryptoTS from 'crypto-ts';
 import * as CryptoJS from 'crypto-js';
 import { BinaryUtils } from './binaryUtils';
-const data_exchanged = '../src/assets/data_exchanged' 
-
+import { DataExchangedService } from './dataExchanged.service'; 
 @Injectable({
   providedIn: 'root', // This makes the service available application-wide
 })
@@ -17,8 +16,10 @@ export class AuthService {
   });
   static SecureVaultService: any;
 
-  constructor(private http: HttpClient, private secureVaultService: SecureVaultService) {}
-
+  constructor(
+    private http: HttpClient, 
+    private secureVaultService: SecureVaultService, 
+    private dataExchangedService: DataExchangedService) {}
 
 //generateM1
 generateM1(): string {
@@ -168,9 +169,14 @@ changeSecureVault(): void {
   //get vault
   const currentVault = JSON.stringify(this.secureVaultService.getVault());
   //get messages
-  const dataExchanged = JSON.stringify(data_exchanged);
+  const dataExchanged = JSON.stringify(this.dataExchangedService.getData());
+
+  console.log("current vault ", currentVault);
+  console.log("data exch: ", dataExchanged);
+
   //Compute H
-  const h = CryptoJS.HmacSHA256(currentVault, dataExchanged).toString(CryptoJS.enc.Hex);  console.log("H: ", h);
+  const h = CryptoJS.HmacSHA256(currentVault, dataExchanged).toString(CryptoJS.enc.Hex);  
+  console.log("H: ", h);
   //split current secure vault into j equal partitions
   // since secure_vault.size = 1024 bits, k = 256 bits ==> j = 1024/256 = 8
   var p = this.secureVaultService.getVault()

@@ -4,7 +4,7 @@ import {cache} from "../index";
 const fs = require('fs');
 const crypto = require('crypto');
 import { BinaryUtils } from './binaryUtils';
-import secure_vault from '../secure_vault.json';
+import * as CryptoJS from 'crypto-js';
 
 export class AuthService{
 
@@ -153,8 +153,11 @@ static changeSecureVault(): void {
   const currentVault = JSON.stringify(SecureVaultService.getData());
   //get messages
   const dataExchanged = JSON.stringify(this.getDataExchanged());
+  console.log("current vault ", currentVault);
+  console.log("data exch: ", dataExchanged);
   //Compute H
-  const h = crypto.createHmac('sha256', dataExchanged).update(currentVault).digest('hex');
+  //const h = crypto.createHmac('sha256', dataExchanged).update(currentVault).digest('hex');
+  const h = CryptoJS.HmacSHA256(currentVault, dataExchanged).toString(CryptoJS.enc.Hex);  
   console.log("H: ", h);
   //split current secure vault into j equal partitions
   // since secure_vault.size = 1024 bits, k = 256 bits ==> j = 1024/256 = 8

@@ -32,4 +32,6 @@ app.use("/auth", authRouter);
 
   // Start the server
 let server = http.createServer(app);
+
+
 server.listen(port, ()=>console.log(`Server is running on http://localhost:${port}`));
