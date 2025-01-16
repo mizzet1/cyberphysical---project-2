@@ -171,7 +171,7 @@ changeSecureVault(): void {
   //get messages
   const dataExchanged = JSON.stringify(this.dataExchangedService.getData());
 
-  console.log("Current Vault:\n", currentVault);
+  console.log("Current Vault:\n", this.secureVaultService.getVault());
   console.log("Data Exchanged:\n", dataExchanged);
 
   //Compute H
