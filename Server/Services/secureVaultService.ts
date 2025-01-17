@@ -28,15 +28,6 @@ static setData(newData: any) {
   console.log('File updated successfully');
 }
 
-static updateSecureVault(index: string, value: string) {
-  // Get the current data from the JSON file
-  const currentData = this.getData();
-  // Update the value of the specified index
-  currentData[index] = value;
-  // Write the updated data back to the JSON file
-  this.setData(currentData);
-}
-
  // Function to write data back to the JSON file and return a promise
  static async initializeSecureVault() {
   const secureVault: { [key: string]: string } = 
