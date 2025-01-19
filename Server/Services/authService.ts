@@ -46,10 +46,9 @@ static generateC1(): number[] {
     cache['C1'] = c1 ;
     return c1;
 }
-
+// Generate a random 256-bit (64-character) hexadecimal string
 static generateR1(): string{
-    // Generate a random 64-bit (16-character) hexadecimal string
-    const r1 = Array.from({ length: 16 }, () =>
+    const r1 = Array.from({ length: 64 }, () =>
       Math.floor(Math.random() * 16).toString(16)
     ).join('');
     cache['r1'] = r1;
@@ -74,8 +73,8 @@ static decryptM3(m3: any): any {
 
   const C1 = cache['C1'];
   const k1 = this.generateKey(C1);
-  //consl
   console.log("k1:" + k1);
+
   var bytes = CryptoTS.AES.decrypt(m3, k1);
   console.log("bytes ", bytes);
 

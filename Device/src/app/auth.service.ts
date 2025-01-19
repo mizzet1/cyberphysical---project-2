@@ -96,9 +96,9 @@ generateC2(): number[] {
   return c2;
 }
 
-// Generate a random 64-bit (16-character) hexadecimal string
+// Generate a random 256-bit (64-character) hexadecimal string
 generateR2(): string { 
-  const hex = Array.from({ length: 16 }, () =>
+  const hex = Array.from({ length: 64 }, () =>
     Math.floor(Math.random() * 16).toString(16)
   ).join('');
   return hex;
