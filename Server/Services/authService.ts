@@ -135,6 +135,7 @@ static generateT(t1: string, t2: string): void {
   //Here we assume that T is stored in a secure database
 }
 
+//Retrieve the data exchanged during communication
 static getDataExchanged(): any {
   try {
     const path = require("path");
@@ -146,6 +147,18 @@ static getDataExchanged(): any {
   }
 }
 
+
+
+/**
+  * 1. convert h to binary 256 bits
+  * 2. convert i to binary 256 bits
+  * 3. h_xor_i = XOR h and i (256 bits)
+  * 4. convert partition to binary 256 bits
+  * 5. partition_xor_h_xor_i =  partition XOR h_xor_i (256 bits)
+  * 6. convert partition_xor_h_xor_i to hex (64 characters)
+  */
+// h  XOR i = (256 bit) XOR (256 bit) = 256 bit
+// partition XOR (h XOR i) = (256 bit) XOR (256 bit) = 256 bit
 static changeSecureVault(): void {
   const new_vault : { [key: string]: string } = {};
 
@@ -180,20 +193,6 @@ static changeSecureVault(): void {
   
   SecureVaultService.setData(new_vault);
   console.log("Secure Vault changed!" + "\nNew Secure Vault: ", new_vault);
-
-  // h  XOR i = (256 bit) XOR (256 bit) = 256 bit
-
-  // element XOR (h XOR i) = 128 (to pad) XOR 256 bit = 256 bit
-
-  /**
-    * CONVERT SECURE VAULT TO 64 HEX CHARACTERS !!!
-   * 1. convert h to binary 256
-   * 2 i = convert i to binary 256
-   * 3. h_xor_i = XOR h and i (256 bits)
-   * 4 convert partition to binary 256
-   * 5. partition_xor_h_xor_i = XOR partition and h_xor_i (256 bits)
-   * 6. convert partition_xor_h_xor_i to hex (64 characters)
-   */
 
 }
 

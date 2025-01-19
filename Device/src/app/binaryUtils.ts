@@ -1,6 +1,4 @@
 export class BinaryUtils {
-
-
     static xor_BinaryStrings(binary1: string, binary2: string): string {
       if (binary1.length !== binary2.length) {
         throw new Error("Binary strings must be of the same length");
@@ -12,7 +10,6 @@ export class BinaryUtils {
         .join(''); // Join the result into a single binary string
     }
   
-
     static binary_ToHex(binaryString: string): string {
       // Validate the input to ensure it's a valid binary string
       if (!/^[01]+$/.test(binaryString)) {
