@@ -55,7 +55,7 @@ authRouter.post("/m3", async (req: any, res: any) => {
     //if (decryptedM3.r1 == cache('r1')) --> generate M4
     if(decryptedM3.r1 == cache['r1']){
 
-      const M4 = AuthService.generateM4(decryptedM3); // if valid Device ID --> generate message M4
+      const M4 = AuthService.generateM4(decryptedM3); 
       const M4_response = {
         message: 'Message M3 received! Sending Message M4 ...',
         M4: M4
