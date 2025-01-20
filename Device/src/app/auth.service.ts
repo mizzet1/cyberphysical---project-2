@@ -61,7 +61,6 @@ generateKey(indices: number[]) {
     console.log("key:", key);
 
     return key;
-    //return BinaryUtils.Hex_to256BitBinary(key);
   });
   console.log("values: ", values);
 
@@ -140,13 +139,13 @@ sendM3(r1: string, c1: number[]): Observable<any> {
 
 //Decrypt the M4 message 
 decryptM4(m4: string): any {
+  //obtain C2 from localstorage (cache)
   const C2 = JSON.parse(localStorage.getItem('C2')!);
   const k2 = this.generateKey(C2);
-  //obtain t1 from localstorege (cache)
+  //obtain t1 from localstorage (cache)
   const t1 = localStorage.getItem('t1')!; 
   //XOR t1 and k2
-  const k2_t1 = BinaryUtils.xorHexStrings(k2, t1);//[k2, t1].reduce((acc, key) => (BigInt(`0x${acc}`) ^ BigInt(`0x${key}`)).toString(16), '0');
-
+  const k2_t1 = BinaryUtils.xorHexStrings(k2, t1);
   console.log("k2_t1: ", k2_t1);
 
   var bytes = CryptoTS.AES.decrypt(m4, k2_t1).toString(CryptoTS.enc.Utf8);
@@ -164,7 +163,16 @@ generateT(t1: string, t2: string): void{
   //Here we assume that T is stored in a secure database
 }
 
-
+/**
+* h  XOR i = (256 bit) XOR (256 bit) = 256 bit
+* element XOR (h XOR i) = 128 (to pad) XOR 256 bit = 256 bit
+* 1. convert h to binary 256
+* 2 i = convert i to binary 256
+* 3. h_xor_i = XOR h and i (256 bits)
+* 4 convert partition to binary 256
+* 5. partition_xor_h_xor_i = XOR partition and h_xor_i (256 bits)
+* 6. convert partition_xor_h_xor_i to hex (64 characters)
+ */
 changeSecureVault(): void {
   console.log("Changing Secure Vault ...");
   const new_vault : { [key: string]: string } = {};
@@ -202,19 +210,7 @@ changeSecureVault(): void {
   this.secureVaultService.setVault(new_vault);
   console.log("Secure Vault changed!" + "\nNew Secure Vault: ", new_vault);
 
-  // h  XOR i = (256 bit) XOR (256 bit) = 256 bit
 
-  // element XOR (h XOR i) = 128 (to pad) XOR 256 bit = 256 bit
-
-  /**
-    * CONVERT SECURE VAULT TO 64 HEX CHARACTERS !!!
-   * 1. convert h to binary 256
-   * 2 i = convert i to binary 256
-   * 3. h_xor_i = XOR h and i (256 bits)
-   * 4 convert partition to binary 256
-   * 5. partition_xor_h_xor_i = XOR partition and h_xor_i (256 bits)
-   * 6. convert partition_xor_h_xor_i to hex (64 characters)
-   */
 
 }
 }

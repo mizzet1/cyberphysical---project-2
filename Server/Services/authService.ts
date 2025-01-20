@@ -98,12 +98,10 @@ static generateT2(): string{
 static generateM4(decryptedM3: any): any {
   //generate k2 (through C2)
   const k2 = this.generateKey(decryptedM3.C2);
-
   //receive t1
   const t1 = decryptedM3.t1;
   //receive r2
   const r2 = decryptedM3.r2;
-
   //generate t2
   const t2 = this.generateT2();
 
@@ -118,7 +116,7 @@ static generateM4(decryptedM3: any): any {
     t2: t2
   });
 
-  //Generate T: Session key
+  //Generate Session Key T
   this.generateT(t1, t2);
 
   // Generate M4 enctrypted

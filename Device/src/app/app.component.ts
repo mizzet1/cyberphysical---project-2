@@ -21,7 +21,7 @@ export class AppComponent implements OnInit{
     this.secureVaultService.initializeSecureVault();
   }
 
-//Function invoked when user click on "Authenticate" button
+//Function invoked when user clicks on "Authenticate" button
 onAuthenticate() {
   console.log("CLIENT: Authentication started!");
   //call sendM1: generates and sends M1 message
@@ -53,6 +53,7 @@ onAuthenticate() {
             //generate T = t1+t2  
             const t1 = localStorage.getItem('t1')!;
             const t2 = decryptedM4.t2;
+            //generate Session Key T
             this.authService.generateT(t1, t2);
           }
         },
