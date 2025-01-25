@@ -51,19 +51,13 @@ generateSessionId(){
 //Generate the key, given the indeces of the keys in secure vault
 generateKey(indices: number[]) {
   const vault = this.secureVaultService.getVault();
-  
-  console.log("Obj keys: ", Object.keys(vault)); // Logs all the keys in the vault object
-  console.log("indices ", indices); // XOR all keys at the given indices
 
   // Get the values of the keys at the given indices
   const values = indices.map((index) => {
     index++;
     const key = vault[index.toString()];
-    console.log("key:", key);
-
     return key;
   });
-  console.log("values: ", values);
 
   const values2 = values.reduce((acc, key) => (BinaryUtils.xorHexStrings(acc, key))); // 256 bits
   return values2;
@@ -107,14 +101,10 @@ generateR2(): string {
 //Generate Message M3 
 generateM3(r1: string, c1: number[]): string {
   const t1 = this.generateT1();
-  console.log("t1: ", t1);
   const c2 = this.generateC2();
-  console.log("c2: ", c2);
   const r2 = this.generateR2();
-  console.log("r2: ", r2);
   //key k1 generated using C1 indeces
   const k1 = this.generateKey(c1); 
-  console.log("k1: ", k1);
 
   //Build the M3 message
   const m3_json = 
@@ -135,7 +125,7 @@ generateM3(r1: string, c1: number[]): string {
 //Send Message M3
 sendM3(r1: string, c1: number[]): Observable<any> {
   const body = this.generateM3(r1, c1);
-  console.log("CLIENT: \nSending message M3 Encrypted: ", body);
+  console.log("CLIENT: \nSending message M3 Encrypted");
   return this.http.post('http://localhost:3000/auth/m3', body, {headers: this.headers});
 }
 
@@ -148,13 +138,11 @@ decryptM4(m4: string): any {
   const t1 = localStorage.getItem('t1')!; 
   //XOR t1 and k2
   const k2_t1 = BinaryUtils.xorHexStrings(k2, t1);
-  console.log("k2_t1: ", k2_t1);
 
   var bytes = CryptoTS.AES.decrypt(m4, k2_t1).toString(CryptoTS.enc.Utf8);
-  console.log("CLIENT: \n bytes M4: " + bytes);
 
   var m4_json = JSON.parse(bytes);
-  console.log("CLIENT: \nDecrypted M4: ", bytes);
+  console.log("CLIENT: Decrypring M4...\nDecrypted M4: ", bytes);
 
   return m4_json;
 }
@@ -162,26 +150,24 @@ decryptM4(m4: string): any {
 generateT(t1: string, t2: string): void{
   const T = BinaryUtils.xorHexStrings(t1, t2);
   console.log("T - Session Key Generated: ", T);
+  console.log("Exhanging data with Server...")
   //Here we assume that T is stored in a secure database
 }
 
-
-
 changeSecureVault(): void {
+
+  //get data exchanged during session
+  const dataExchanged = JSON.stringify(this.dataExchangedService.getData());
+  console.log("Timeout Expired\nData Exchanged:\n", dataExchanged);
+
   console.log("Changing Secure Vault ...");
   const new_vault : { [key: string]: string } = {};
 
   //get vault
   const currentVault = JSON.stringify(this.secureVaultService.getVault());
-  //get messages
-  const dataExchanged = JSON.stringify(this.dataExchangedService.getData());
-
-  console.log("Current Vault:\n", this.secureVaultService.getVault());
-  console.log("Data Exchanged:\n", dataExchanged);
 
   //Compute H
   const h = CryptoJS.HmacSHA256(currentVault, dataExchanged).toString(CryptoJS.enc.Hex);  
-  console.log("H: ", h);
   //split current secure vault into j equal partitions
   // since secure_vault.size = 1024 bits, k = 256 bits ==> j = 1024/256 = 8
   var p = this.secureVaultService.getVault()

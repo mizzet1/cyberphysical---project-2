@@ -32,7 +32,7 @@ onAuthenticate() {
         + "\n" + "Server response - M2: "+ res1.M2);
 
       //Only if server responds set timeout to change secure vault
-      console.log("Timeout of " + JSON.parse(m1).duration + "started!");
+      console.log("Timeout of " + JSON.parse(m1).duration + "ms started!");
       setTimeout(() => {this.authService.changeSecureVault()}, JSON.parse(m1).duration); 
 
       const m2_json = JSON.parse(res1.M2);
