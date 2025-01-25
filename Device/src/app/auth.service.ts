@@ -163,16 +163,8 @@ generateT(t1: string, t2: string): void{
   //Here we assume that T is stored in a secure database
 }
 
-/**
-  * 1. convert h to binary 256 bits
-  * 2. convert i to binary 256 bits
-  * 3. h_xor_i = XOR h and i (256 bits)
-  * 4. convert partition to binary 256 bits
-  * 5. partition_xor_h_xor_i =  partition XOR h_xor_i (256 bits)
-  * 6. convert partition_xor_h_xor_i to hex (64 characters)
-  */
-// h  XOR i = (256 bit) XOR (256 bit) = 256 bit
-// partition XOR (h XOR i) = (256 bit) XOR (256 bit) = 256 bit
+
+
 changeSecureVault(): void {
   console.log("Changing Secure Vault ...");
   const new_vault : { [key: string]: string } = {};
@@ -193,6 +185,16 @@ changeSecureVault(): void {
   var p = this.secureVaultService.getVault()
 
   // generate new secure vault with j partitions Pi XOR (h XOR i) , where i is the index of the partition
+  /**
+  * 1. convert h to binary 256 bits
+  * 2. convert i to binary 256 bits
+  * 3. h_xor_i = XOR h and i (256 bits)
+  * 4. convert partition to binary 256 bits
+  * 5. partition_xor_h_xor_i =  partition XOR h_xor_i (256 bits)
+  * 6. convert partition_xor_h_xor_i to hex (64 characters)
+  */
+  // h  XOR i = (256 bit) XOR (256 bit) = 256 bit
+  // partition XOR (h XOR i) = (256 bit) XOR (256 bit) = 256 bit
   Object.keys(p).forEach((key, i) => {
     const h_bin = BinaryUtils.Hex_to256BitBinary(h);
     const i_bin = BinaryUtils.Number_to256BitBinary(i);
