@@ -38,6 +38,7 @@ static generateC1(): number[] {
     const p: number = Math.floor(Math.random() * 6) + 2; 
 
     const indeces = [0,1,2,3,4,5,6,7];
+    // Randomly select p indeces from the array indeces
     for (let i = 0; i < p; i++) {
       const current_index = Math.floor(Math.random() * indeces.length)  
       c1.push(indeces[current_index]);
@@ -48,6 +49,7 @@ static generateC1(): number[] {
 }
 // Generate a random 256-bit (64-character) hexadecimal string
 static generateR1(): string{
+  // Generate a random 256-bit (64-character) hexadecimal string
     const r1 = Array.from({ length: 64 }, () =>
       Math.floor(Math.random() * 16).toString(16)
     ).join('');
@@ -63,7 +65,7 @@ static generateKey(indices: number[]) {
     const key = vault[index.toString()];
     return key;
   });
-  
+  // XOR all the keys together to generate a single 256-bit key
   const values2 = values.reduce((acc, key) => (BinaryUtils.xorHexStrings(acc, key))); // 256 bits
   return values2;
 }
@@ -134,6 +136,7 @@ static generateT(t1: string, t2: string): void {
 static getDataExchanged(): any {
   try {
     const path = require("path");
+    // Use fs.readFileSync to read data synchronously from the file
     const rawData = fs.readFileSync(path.resolve(__dirname, '../data_exchanged.json'), "utf-8");
     return JSON.parse(rawData); 
   } catch (err) {

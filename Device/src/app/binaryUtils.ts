@@ -64,11 +64,12 @@ static Hex_to256BitBinary(hexString: string): string {
 }
   // XOR two strings in Hexadecimal format
 static xorHexStrings(hexString1: string, hexString2: string) : string{
+  // Convert the hexadecimal strings to binary
   const hexString1_bin = this.Hex_to256BitBinary(hexString1);
   const hexString2_bin = this.Hex_to256BitBinary(hexString2);
-
+  // XOR the binary strings
   const xor_bin = this.xor_BinaryStrings(hexString1_bin, hexString2_bin);
-
+  // Convert the result back to hexadecimal
   const xor_hex = this.binary_ToHex(xor_bin);
   return xor_hex;
 }

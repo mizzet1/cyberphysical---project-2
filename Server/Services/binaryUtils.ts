@@ -33,6 +33,7 @@ static Number_to256BitBinary(number: number): string {
 if (!Number.isInteger(number)) {
   throw new Error("Input must be an integer");
 }
+// Validate the input to ensure it's a non-negative number
 if (number < 0) {
   throw new Error("Input must be a non-negative integer");
 }
@@ -63,11 +64,12 @@ return binaryString.padStart(256, '0'); // Pad to 256 bits
 }
   // XOR two strings in Hexadecimal format
 static xorHexStrings(hexString1: string, hexString2: string): string {
+// Convert the hexadecimal strings to binary  
 const hexString1_bin = this.Hex_to256BitBinary(hexString1);
 const hexString2_bin = this.Hex_to256BitBinary(hexString2);
-
+// Perform XOR operation on the binary strings
 const xor_bin = this.xor_BinaryStrings(hexString1_bin, hexString2_bin);
-
+// Convert the result back to hexadecimal
 const xor_hex = this.binary_ToHex(xor_bin);
 return xor_hex;
 }

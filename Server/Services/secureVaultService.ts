@@ -8,6 +8,7 @@ private static filePath: string = '../secure_vault.json';
 // Function to read and parse the JSON file
 static getData() {
   try {
+    // Use fs.readFileSync to read data synchronously from the file
     const rawData = fs.readFileSync(path.resolve(__dirname, this.filePath), "utf-8");
     return JSON.parse(rawData); // Parse the JSON string into an object
   } catch (err) {
@@ -20,6 +21,7 @@ static getData() {
 static setData(newData: any) {
   try {
     const dataToWrite = JSON.stringify(newData, null, 2); // Convert object back to JSON
+    // Use fs.writeFileSync to write data synchronously to the file
     fs.writeFileSync(path.resolve(__dirname, this.filePath), dataToWrite, "utf-8"); // Write the updated data back to the file
     
   } catch (err) {

@@ -43,6 +43,7 @@ sendM1(m1: string): Observable<any>{
 //generateSessionId
 generateSessionId(){
   const sessionId = Math.floor(Math.random() * 1000).toString();
+  // Save the session ID in local storage
   localStorage.setItem('sessionId', sessionId);
   return sessionId;
 }
@@ -54,7 +55,7 @@ generateKey(indices: number[]) {
   console.log("Obj keys: ", Object.keys(vault)); // Logs all the keys in the vault object
   console.log("indices ", indices); // XOR all keys at the given indices
 
-  
+  // Get the values of the keys at the given indices
   const values = indices.map((index) => {
     index++;
     const key = vault[index.toString()];
@@ -97,6 +98,7 @@ generateC2(): number[] {
 
 // Generate a random 256-bit (64-character) hexadecimal string
 generateR2(): string { 
+  // Generate a random 256-bit (64-character) hexadecimal string
   const hex = Array.from({ length: 64 }, () =>
     Math.floor(Math.random() * 16).toString(16)
   ).join('');

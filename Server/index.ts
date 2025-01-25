@@ -36,7 +36,7 @@ app.use("/auth", authRouter);
 let server = http.createServer(app);
 
 
-
+// Initialize the secure vault before starting the server
 SecureVaultService.initializeSecureVault().then(()=>{
   server.listen(port, ()=>console.log(`Server is running on http://localhost:${port}`))});
 

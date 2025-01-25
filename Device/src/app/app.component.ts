@@ -16,7 +16,7 @@ export class AppComponent implements OnInit{
     'Content-Type':  'application/json'
   });
   constructor(private authService: AuthService, private secureVaultService: SecureVaultService) {}
-  
+  // Initialize the secure vault
   ngOnInit(): void {
     this.secureVaultService.initializeSecureVault();
   }
