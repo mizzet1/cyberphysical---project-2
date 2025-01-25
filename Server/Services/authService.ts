@@ -177,15 +177,19 @@ static changeSecureVault(): void {
     const i_bin = BinaryUtils.Number_to256BitBinary(i);
     const h_xor_i = BinaryUtils.xor_BinaryStrings(h_bin, i_bin);
 
+    //get partition key and convert it to binary
     const partition: string = p[key];
     const partition_bin = BinaryUtils.Hex_to256BitBinary(partition);
 
+    //compute p XOR (h_xor_i) and convert it to hex
     const result_i_bin = BinaryUtils.xor_BinaryStrings(partition_bin, h_xor_i);
     const result_i = BinaryUtils.binary_ToHex(result_i_bin);
 
+    //save the new value in new_vault
     new_vault[key] = result_i;
   });
   
+  //update secure vault
   SecureVaultService.setData(new_vault);
   console.log("Secure Vault changed!" + "\nNew Secure Vault: ", new_vault);
 
