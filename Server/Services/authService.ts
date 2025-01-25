@@ -75,16 +75,12 @@ static decryptM3(m3: any): any {
 
   const C1 = cache['C1'];
   const k1 = this.generateKey(C1);
-  console.log("k1:" + k1);
 
   var bytes = CryptoTS.AES.decrypt(m3, k1);
-  console.log("bytes ", bytes);
 
   var m3_string = CryptoTS.enc.Utf8.stringify(bytes);
-  console.log("m3_string ", m3_string);
 
   var m3_json = JSON.parse(m3_string);
-  console.log("m3_json ", m3_json);
 
   return m3_json;
 }
@@ -109,8 +105,6 @@ static generateM4(decryptedM3: any): any {
 
   // XOR k2 and t1
   const k2_t1 = BinaryUtils.xorHexStrings(k2, t1);
-  console.log("k2: " + k2 + "\n" + "t1: " + t1 + "\n" 
-    + "k2_XOR_t1: ", k2_t1 + "\n" + "t2: ", t2 );
 
   // Concatenate r2 and t2
   const m4_payload = JSON.stringify({
@@ -148,18 +142,17 @@ static getDataExchanged(): any {
 
 
 static changeSecureVault(): void {
-  const new_vault : { [key: string]: string } = {};
+  //get data exchanged during session
+  const dataExchanged = JSON.stringify(this.getDataExchanged());
+  console.log("Timeout Expired\nData Exchanged:\n", dataExchanged);
 
+  console.log("Changing Secure Vault ...");
+  const new_vault : { [key: string]: string } = {};
   //get vault
   const currentVault = JSON.stringify(SecureVaultService.getData());
-  //get messages
-  const dataExchanged = JSON.stringify(this.getDataExchanged());
-  console.log("current vault ", currentVault);
-  console.log("data exch: ", dataExchanged);
+  
   //Compute H
-  //const h = crypto.createHmac('sha256', dataExchanged).update(currentVault).digest('hex');
   const h = CryptoJS.HmacSHA256(currentVault, dataExchanged).toString(CryptoJS.enc.Hex);  
-  console.log("H: ", h);
   //split current secure vault into j equal partitions
   // since secure_vault.size = 1024 bits, k = 256 bits ==> j = 1024/256 = 8
   var p = SecureVaultService.getData();

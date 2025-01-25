@@ -142,7 +142,7 @@ decryptM4(m4: string): any {
   var bytes = CryptoTS.AES.decrypt(m4, k2_t1).toString(CryptoTS.enc.Utf8);
 
   var m4_json = JSON.parse(bytes);
-  console.log("CLIENT: Decrypring M4...\nDecrypted M4: ", bytes);
+  console.log("CLIENT: Decrypting M4...\nDecrypted M4: ", bytes);
 
   return m4_json;
 }
@@ -155,7 +155,6 @@ generateT(t1: string, t2: string): void{
 }
 
 changeSecureVault(): void {
-
   //get data exchanged during session
   const dataExchanged = JSON.stringify(this.dataExchangedService.getData());
   console.log("Timeout Expired\nData Exchanged:\n", dataExchanged);

@@ -26,7 +26,7 @@ authRouter.post("/m1", async (req: any, res: any) => {
       message: 'Message M1 received! Sending Message M2 ...',
       M2: M2
     }
-    console.log("SERVER: Sending Message M2 ..." + "\nM2: "+ M2);
+    console.log("SERVER: DeviceID valid\nSending Message M2 ..." + "\nM2: "+ M2);
 
     //Set timeout to change secure vault
     setTimeout(() => { 
@@ -61,8 +61,8 @@ authRouter.post("/m3", async (req: any, res: any) => {
         M4: M4
       }
       console.log(" Sending Message M4 ...");
-      console.log("M4: "+ M4);
       res.status(200).json(M4_response);
+      console.log("Exchanging data with Device...")
     }
   }
 });
