@@ -31,10 +31,7 @@ onAuthenticate() {
       console.log("Server responded to M1! \n" + "Server message - M2: "+ res1.message 
         + "\n" + "Server response - M2: "+ res1.M2);
 
-      //Only if server responds it starts the Timeout( this because an attacker can forge M1, 
-      //set duration = inf and block the authentication indefinitely)
-
-      //Set timeout 
+      //Only if server responds set timeout to change secure vault
       console.log("Timeout of " + JSON.parse(m1).duration + "started!");
       setTimeout(() => {this.authService.changeSecureVault()}, JSON.parse(m1).duration); 
 

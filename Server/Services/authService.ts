@@ -125,8 +125,6 @@ static generateM4(decryptedM3: any): any {
 }
 
 static generateT(t1: string, t2: string): void {
-  // const bigIntt1: bigint = BigInt(`0x${t1}`);
-  // const bigIntt2: bigint = BigInt(`0x${t2}`);
   const T = BinaryUtils.xorHexStrings(t1, t2);
   console.log("T - Session Key Generated: ", T);
   //Here we assume that T is stored in a secure database
@@ -143,7 +141,6 @@ static getDataExchanged(): any {
     return null;
   }
 }
-
 
 
 /**

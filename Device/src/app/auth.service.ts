@@ -164,15 +164,15 @@ generateT(t1: string, t2: string): void{
 }
 
 /**
-* h  XOR i = (256 bit) XOR (256 bit) = 256 bit
-* element XOR (h XOR i) = 128 (to pad) XOR 256 bit = 256 bit
-* 1. convert h to binary 256
-* 2 i = convert i to binary 256
-* 3. h_xor_i = XOR h and i (256 bits)
-* 4 convert partition to binary 256
-* 5. partition_xor_h_xor_i = XOR partition and h_xor_i (256 bits)
-* 6. convert partition_xor_h_xor_i to hex (64 characters)
- */
+  * 1. convert h to binary 256 bits
+  * 2. convert i to binary 256 bits
+  * 3. h_xor_i = XOR h and i (256 bits)
+  * 4. convert partition to binary 256 bits
+  * 5. partition_xor_h_xor_i =  partition XOR h_xor_i (256 bits)
+  * 6. convert partition_xor_h_xor_i to hex (64 characters)
+  */
+// h  XOR i = (256 bit) XOR (256 bit) = 256 bit
+// partition XOR (h XOR i) = (256 bit) XOR (256 bit) = 256 bit
 changeSecureVault(): void {
   console.log("Changing Secure Vault ...");
   const new_vault : { [key: string]: string } = {};

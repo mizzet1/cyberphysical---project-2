@@ -28,7 +28,7 @@ static binary_ToHex(binaryString: string): string {
       .join('') // Join all hex characters into a single string
       .toUpperCase() || ''; // Return in uppercase
   }
-  // Convert a posivive Number --> 256 bit binary string
+  // Convert a Posivive Number --> 256 bit binary string
 static Number_to256BitBinary(number: number): string {
   // Validate the input to ensure it's a valid number
   if (!Number.isInteger(number)) {
@@ -41,7 +41,7 @@ static Number_to256BitBinary(number: number): string {
   // Convert the number to binary and pad to 256 bits
   return number.toString(2).padStart(256, '0');
 }
-  // Convert an Hexadecimal string --> 256 bit binary string
+  // Convert an Hexadecimal String --> 256 bit binary string
 static Hex_to256BitBinary(hexString: string): string {
   // Validate the input to ensure it's a valid hexadecimal string
   // if (!/^[0-9a-fA-F]+$/.test(hexString)) {
